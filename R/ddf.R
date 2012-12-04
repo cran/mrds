@@ -59,13 +59,10 @@
 #' and the remainder is a function definition with specified arguments.  At
 #' present there are two different functions, \code{\link{cds}} and
 #' \code{\link{mcds}}, for conventional distance sampling and multi-covariate
-#' distance sampling.  Both functions have the same arguments
-#' (\code{key},\code{adjust},\code{formula}) in different orders.  The first
-#' two are arguments to specify the key and adjustment functions used to model
-#' the detection function.  Adjustment functions can have the values: "none",
-#' "cos" (cosine), "poly" (polynomials), and "herm" (Hermite polynomials).
-#' Also, half-normal ("hn"), hazard-rate ("hr") and gamma ("gamma") are the
-#' possible key functions.  The argument \code{formula} specifies the formula
+#' distance sampling.  Both functions have the same required arguments
+#' (\code{key},\code{formula}).  The first specifies the key function this
+#' can be half-normal ("hn"), hazard-rate ("hr"), gamma ("gamma") or uniform
+#' ("unif"). The argument \code{formula} specifies the formula
 #' for the log of the scale parameter of the key function (e.g., the equivalent
 #' of the standard deviation in the half-normal).  The variable \code{distance}
 #' should not be included in the formula because the scale is for distance.
@@ -73,6 +70,13 @@
 #' representation of the scale formula. For the hazard rate and gamma
 #' functions, an additional \code{shape.formula} can be specified for the model
 #' of the shape parameter.  The default will be ~1.
+#' Adjustment terms can be specified by setting \code{adj.series} which can have
+#' the values: "none", "cos" (cosine), "poly" (polynomials), and "herm" 
+#' (Hermite polynomials). One must also specify a vector of orders for the
+#' adjustment terms (\code{adj.order}) and a scaling (\code{adj.scale}) which
+#' may be "width" or "scale" (for scaling by the scale parameter). Note that 
+#' the uniform key can only be used with adjustments (usually cosine adjustments
+#' for a Fourier-type analysis.
 #' 
 #' The \code{mrmodel} specifies the form of the conditional detection functions
 #' (i.e.,probability it is seen by observer j given it was seen by observer
@@ -99,8 +103,15 @@
 #' \code{width} \tab distance specifying half-width of the transect \cr
 #' \code{left} \tab distance specifying inner truncation value \cr
 #' \code{binned} \tab TRUE or FALSE to specify whether distances should be
-#' binned for analysis \cr \code{int.range} \tab an integration range for
-#' detection probability \cr \code{mono} \tab constrain the detection function to be (strictly) monotonically decreasing (when there are no covariates) \cr \code{mono.strict} \tab when TRUE (default when mono=TRUE) strict monotonicity is enforced, else only weak monotonicity. \cr}
+#' binned for analysis \cr 
+#' \code{breaks} \tab if binned=TRUE, this is a required sequence of break 
+#' points that are used for plotting/gof. They should match \code{distbegin}, 
+#' \code{distend} values if bins are fixed \cr
+#' \code{int.range} \tab an integration range for detection probability \cr 
+#' \code{mono} \tab constrain the detection function to be (strictly) 
+#' monotonically decreasing (when there are no covariates) \cr 
+#' \code{mono.strict} \tab when TRUE (default when mono=TRUE) strict 
+#' monotonicity is enforced, else only weak monotonicity. \cr}
 #' 
 #' Using \code{meta.data=list(int.range=c(1,10))} is the same as
 #' \code{meta.data=list(left=1,width=10)}.  If
@@ -126,25 +137,35 @@
 #' to control fitting if the algorithm doesn't converge which happens
 #' infrequently.  The list values include:
 #' 
-#' \tabular{ll}{ Option \tab Value \cr \code{showit} \tab Integer (0-3, 
-#' default 0) controls the (increasing) amount of information printed during 
-#' fitting. 0 - none, >=1 - information about refitting and bound changes is 
-#' printed, >=2 - information about adjustment term fitting is printed, ==3 -
-#' per-iteration parameter estimates and log-likelihood printed. \cr 
-#' \code{doeachint} \tab if TRUE forces numerical integration rather than 
-#' interpolation method \cr \code{estimate} \tab if FALSE fits model but 
-#' doesn't estimate predicted probabilities \cr \code{refit} \tab if TRUE the 
-#' algorithm will attempt multiple optimizations at different starting values 
-#' if it doesn't converge \cr \code{nrefits} \tab number of refitting attempts 
-#' \cr \code{initial} \tab a named list of starting values for the parameters 
-#' (\code{$scale}, \code{$shape}, \code{$adjust}) \cr 
-#' \code{lowerbounds} \tab a vector of lowerbounds for the parameters \cr 
-#' \code{upperbounds} \tab a vector of upperbounds for the parameters \cr 
-#' \code{limit} \tab if TRUE restrict analysis to observations with 
-#' \code{detected}=1 \cr \code{debug} \tab  if TRUE, if fitting fails, return 
-#' an object with fitting information \cr \code{nofit} \tab if TRUE don't fit 
-#' a model, but use the starting values and generate an object based on those 
-#' values \cr}
+#' \tabular{ll}{ Option \tab Value \cr 
+#'   \code{showit} \tab Integer (0-3, default 0) controls the (increasing) 
+#'    amount of information printed during fitting. 0 - none, >=1 - information
+#'    about refitting and bound changes is printed, >=2 - information about 
+#'    adjustment term fitting is printed, ==3 -per-iteration parameter 
+#'    estimates and log-likelihood printed. \cr 
+#'   \code{doeachint} \tab if TRUE forces numerical integration rather than 
+#'    interpolation method \cr 
+#'   \code{estimate} \tab if FALSE fits model but doesn't estimate predicted 
+#'    probabilities \cr 
+#'   \code{refit} \tab if TRUE the algorithm will attempt multiple optimizations
+#'    at different starting values if it doesn't converge \cr 
+#'   \code{nrefits} \tab number of refitting attempts \cr 
+#'   \code{initial} \tab a named list of starting values for the parameters 
+#'    (\code{$scale}, \code{$shape}, \code{$adjust}) \cr 
+#'   \code{lowerbounds} \tab a vector of lowerbounds for the parameters \cr 
+#'   \code{upperbounds} \tab a vector of upperbounds for the parameters \cr 
+#'   \code{limit} \tab if TRUE restrict analysis to observations with 
+#'    \code{detected}=1 \cr 
+#'   \code{debug} \tab  if TRUE, if fitting fails, return an object with fitting
+#'    information \cr 
+#'   \code{nofit} \tab if TRUE don't fit a model, but use the starting values 
+#'    and generate an object based on those values \cr
+#'   \code{optimx.method} \tab one (or a vector of) string(s) giving the 
+#'    optimisation method to use. If more than one is supplied, the results from
+#'    one are used as the starting values for the next. See 
+#'    \code{\link{optimx}}\cr
+#'   \code{optimx.maxit} \tab maximum number of iterations to use in the 
+#'    optimisation.\cr}
 #' 
 #' @param dsmodel distance sampling model specification
 #' @param mrmodel mark-recapture model specification
@@ -177,44 +198,57 @@
 #' result=ddf(dsmodel = ~mcds(key = "hn", formula = ~1), data = egdata, method = "ds", meta.data = list(width = 4))
 #' result=ddf(mrmodel = ~glm(~distance), data = egdata, method = "io.fi", meta.data = list(width = 4))
 #' result=ddf(dsmodel = ~cds(key = "hn"), mrmodel = ~glm(~distance), data = egdata, method = "io", meta.data = list(width = 4))
+#' \donttest{
+#' data(ptdata.single)
+#' ptdata.single$distbegin=(as.numeric(cut(ptdata.single$distance,10*(0:10)))-1)*10
+#' ptdata.single$distend=(as.numeric(cut(ptdata.single$distance,10*(0:10))))*10
+#' model=ddf(data=ptdata.single,dsmodel=~cds(key="hn"),meta.data=list(point=TRUE,binned=TRUE,breaks=10*(0:10)))
+#' summary(model)
+#' plot(model,main="Single observer binned point data - half normal")
+#' model=ddf(data=ptdata.single,dsmodel=~cds(key="hr"),meta.data=list(point=TRUE,binned=TRUE,breaks=10*(0:10)))
+#' summary(model)
+#' plot(model,main="Single observer binned point data - hazard rate")
 #' 
-ddf <-
-function(dsmodel=call(), mrmodel=call(),data, method="ds", meta.data=list(), control=list())
-{
-# 
-# ddf  - generic function for fitting distance detection functions
-#
-# Arguments:
-#
-#  dsmodel   - distance sampling model specification
-#  mrmodel   - mark-recapture model specfication 
-#  data      - dataframe
-#  method    - fitting method
-#  meta.data - list containing settings controlling data structure
-#  control   - list containing settings controlling model fitting
-#
-# Value:
-# 
-#   model object of class=(method, "ddf")
-#
-# Functions Used: ddf.ds, ddf.io, ddf.trial, ddf.io.fi, ddf.trial.fi, ddf.rem, ddf.rem.fi  
-#
-#   
-#  Save current user options and then set desgn contrasts to treatment style; load stats
-#
+#' dev.new() 
+#' data(ptdata.dual)
+#' ptdata.dual$distbegin=(as.numeric(cut(ptdata.dual$distance,10*(0:10)))-1)*10
+#' ptdata.dual$distend=(as.numeric(cut(ptdata.dual$distance,10*(0:10))))*10
+#' model=ddf(method="io",data=ptdata.dual,dsmodel=~cds(key="hn"),mrmodel=~glm(formula=~distance*observer),meta.data=list(point=TRUE,binned=TRUE,breaks=10*(0:10)))
+#' summary(model)
+#' par(mfrow=c(2,3))
+#' plot(model,main="Dual observer binned point data",new=FALSE)
+#' model=ddf(method="io",data=ptdata.dual,dsmodel=~cds(key="unif",adj.series="cos", adj.order=1),mrmodel=~glm(formula=~distance*observer),meta.data=list(point=TRUE,binned=TRUE,breaks=10*(0:10)))
+#' summary(model)
+#' par(mfrow=c(2,3))
+#' plot(model,main="Dual observer binned point data",new=FALSE)
+#' } 
+ddf <- function(dsmodel=call(), mrmodel=call(),data, method="ds", 
+                meta.data=list(), control=list()){
+# Functions Used: ddf.ds, ddf.io, ddf.trial, ddf.io.fi, ddf.trial.fi, 
+#                 ddf.rem, ddf.rem.fi  
+
+  # Save current user options and then set desgn contrasts to treatment 
+  # style; load stats
+
   save.options<-options()
   options(contrasts=c("contr.treatment","contr.poly"))
   library(stats)
-#
-# Check to make sure method is valid and correct model components have been specified
-#
-  method=match.arg(method,c("ds","io","io.fi","trial","trial.fi","rem","rem.fi"))
-  if(method %in% c("ds","io","trial","rem"))
-      if(missing(dsmodel))
-         stop("For method=",method,", dsmodel must be specified")
-  if(method != "ds")
-      if(missing(mrmodel))
-         stop("For method=",method,", mrmodel must be specified")
+
+  # Check to make sure method is valid and correct model components 
+  # have been specified
+  method <- match.arg(method,c("ds","io","io.fi","trial","trial.fi",
+                               "rem","rem.fi"))
+
+  if(method %in% c("ds","io","trial","rem")){
+    if(missing(dsmodel)){
+      stop("For method=",method,", dsmodel must be specified")
+    }
+  }
+  if(method != "ds"){
+    if(missing(mrmodel)){
+      stop("For method=",method,", mrmodel must be specified")
+    }
+  }
 #
 # call method specific fitting function
 #

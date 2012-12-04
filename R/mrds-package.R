@@ -121,7 +121,7 @@ NULL
 #'   M.S. Thesis. Utah State University, Logan, Utah. 55p.
 #' @keywords datasets
 #' @examples
-#' 
+#' \donttest{
 #' data(stake77)
 #' # Functions to extract stake data and put in the mrds format for model fitting.
 #' extract.stake=function(stake,obs)
@@ -170,9 +170,10 @@ NULL
 #' stkpairs=extract.stake.pairs(stake77,1,3,removal=FALSE)
 #' io.model=ddf(dsmodel = ~mcds(key = "hn", formula=~1), mrmodel=~glm(formula=~distance),data = stkpairs, method = "io")
 #' summary(io.model)
-#' plot(io.model,breaks=seq(0,20,2),showpoints=TRUE)
+#' par(mfrow=c(3,2))
+#' plot(io.model,breaks=seq(0,20,2),showpoints=TRUE,new=FALSE)
 #' ddf.gof(io.model)
-#' 
+#' }
 NULL
 
 
@@ -211,7 +212,7 @@ NULL
 #'   M.S. Thesis. Utah State University, Logan, Utah. 55p.
 #' @keywords datasets
 #' @examples
-#' 
+#' \donttest{
 #' data(stake78)
 #' data(stake77)
 #' # compare distribution of distances for all stakes
@@ -265,9 +266,10 @@ NULL
 #' stkpairs=extract.stake.pairs(stake78,5,7,removal=FALSE)
 #' io.model=ddf(dsmodel = ~mcds(key = "hn", formula=~1), mrmodel=~glm(formula=~distance),data = stkpairs, method = "io")
 #' summary(io.model)
-#' plot(io.model,breaks=seq(0,20,2),showpoints=TRUE)
+#' par(mfrow=c(3,2))
+#' plot(io.model,breaks=seq(0,20,2),showpoints=TRUE,new=FALSE)
 #' ddf.gof(io.model)
-#' 
+#' }
 #' 
 NULL
 
@@ -283,7 +285,7 @@ NULL
 #'   detected: numeric 0/1  $ object: sequential object number $Sample.Label: point label $ Region.Label: single region label
 #' @keywords datasets
 #' @examples
-#' 
+#' \donttest{
 #' data(ptdata.distance)
 #' xx=ddf(dsmodel = ~cds(key="hn", formula = ~1), data = ptdata.distance, method = "ds", meta.data = list(point=TRUE))
 #' summary(xx)
@@ -292,6 +294,7 @@ NULL
 #' Regions=data.frame(Region.Label=1,Area=1)
 #' Samples=data.frame(Sample.Label=1:30,Region.Label=rep(1,30),Effort=rep(1,30))
 #' print(dht(xx,sample.table=Samples,region.table=Regions))
+#' }
 NULL
 
 
@@ -308,11 +311,12 @@ NULL
 #'   detected: numeric 0/1  $ object : sequential object number
 #' @keywords datasets
 #' @examples
-#' 
+#' \donttest{
 #' data(ptdata.single)
 #' xx=ddf(dsmodel = ~cds(key="hn", formula = ~1), data = ptdata.single, method = "ds", meta.data = list(point=TRUE))
 #' summary(xx)
 #' plot(xx,main="Simulated point count data")
+#' }
 NULL
 
 #' Simulated dual observer point count data
@@ -328,11 +332,12 @@ NULL
 #'   object : sequential object number
 #' @keywords datasets
 #' @examples
-#' 
+#' \donttest{
 #' data(ptdata.dual)
 #' xx=ddf(mrmodel=~glm(formula=~distance), dsmodel = ~cds(key="hn", formula = ~1), data = ptdata.dual, method = "io", meta.data = list(point=TRUE))
 #' summary(xx)
 #' plot(xx,main="Simulated point count data")
+#' }
 NULL
 
 
@@ -349,9 +354,10 @@ NULL
 #'   object : sequential object number
 #' @keywords datasets
 #' @examples
-#' 
+#' \donttest{
 #' data(ptdata.removal)
 #' xx=ddf(mrmodel=~glm(formula=~distance), dsmodel = ~cds(key="hn", formula = ~1), data = ptdata.removal, method = "rem", meta.data = list(point=TRUE))
 #' summary(xx)
 #' plot(xx,main="Simulated point count data")
+#' }
 NULL

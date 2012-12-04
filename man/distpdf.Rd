@@ -1,9 +1,10 @@
-\name{fx}
+\name{distpdf}
 \alias{adjfct.cos}
 \alias{adjfct.herm}
 \alias{adjfct.poly}
 \alias{apex.gamma}
 \alias{detfct}
+\alias{distpdf}
 \alias{fr}
 \alias{fx}
 \alias{g0}
@@ -18,13 +19,13 @@
     width=NULL, standardize = TRUE, stdint=FALSE)
 
   adjfct.cos(distance, scaling = 1, adj.order, adj.parm =
-    NULL)
+    NULL, adj.exp=FALSE)
 
   adjfct.poly(distance, scaling = 1, adj.order, adj.parm =
-    NULL)
+    NULL, adj.exp=FALSE)
 
   adjfct.herm(distance, scaling = 1, adj.order, adj.parm =
-    NULL)
+    NULL, adj.exp=FALSE)
 
   scalevalue(key.scale, z)
 
@@ -39,6 +40,8 @@
   fx(distance,ddfobj,select=NULL,index=NULL,width=NULL,standardize=TRUE,stdint=FALSE)
 
   fr(distance,ddfobj,select=NULL,index=NULL,width=NULL,standardize=TRUE,stdint=FALSE)
+
+  distpdf(distance,ddfobj,select=NULL,index=NULL,width=NULL,standardize=TRUE,stdint=FALSE,point=FALSE)
 }
 \arguments{
   \item{distance}{vector of distances}
@@ -70,6 +73,12 @@
 
   \item{stdint}{logical used to decide whether integral is
   standardized}
+
+  \item{point}{if TRUE, point counts; otherwise line
+  transects}
+
+  \item{adj.exp}{if TRUE uses exp(adj) for adjustment to
+  keep f(x)>0}
 }
 \value{
   For \code{detfct}, the value is a vector of detection
@@ -120,7 +129,7 @@
   point counts respectively
 }
 \author{
-  Jeff Laake David Miller
+  Jeff Laake, David Miller
 }
 \references{
   Marques and Buckland 2004 Laake and Borchers 2004. in

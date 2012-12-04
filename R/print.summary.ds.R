@@ -15,26 +15,12 @@
 #' @seealso \code{\link{summary.ds}}
 #' @keywords utility
 
-print.summary.ds <- 
-function (x,...)
-#
-# print.summary.ds
-#  Print summary data for a ds object.
-# 
-# Argument
-#  x	- object returned from summary.ds
-#
-# Value
-#  Prints summary information
-#
-# dlm 03-Sep-05	Initial work started
-#
-{
+print.summary.ds <- function (x,...){
   cat("\nSummary for ds object \n")
-    
   cat("Number of observations : ", x$n,"\n")
   cat("Distance range         : ", x$left, " - ",x$width,"\n")
   cat("AIC                    : ", x$aic, "\n")
+  cat("\nDetection function:\n",model.description(x),"\n")
   cat("\nDetection function parameters", "\n")
   cat("Scale Coefficients: ", "\n")
   print(x$coeff$key.scale)
@@ -47,6 +33,12 @@ function (x,...)
      print(x$coeff$adj.parm)
   }
   cat("\n")
+  if(x$mono & x$mono.strict){
+    cat("\nStrict monotonicity constraints were enforced.\n")
+  }else if(x$mono){
+    cat("\nMonotonicity constraints were enforced.\n")
+  }
+ 
   if(!is.null(x$Nhat))
   {
 #      parameters=data.frame(Estimate=c(x$average.p,x$average.f0,x$Nhat))

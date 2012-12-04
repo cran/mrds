@@ -118,7 +118,7 @@ return(list(fct="gam",formula=formula,link=substitute(link)))
 #
 # Set up control values
 #
-   control=assign.default.values(control,showit = FALSE, doeachint=FALSE, estimate=TRUE,refit=TRUE,nrefits=25,
+   control=assign.default.values(control,showit = 0, doeachint=FALSE, estimate=TRUE,refit=TRUE,nrefits=25,
                                   initial = NA, lowerbounds = NA, upperbounds = NA, mono.points=20)
 #
 # Assign model values; this uses temporarily defined functions glm and gam
@@ -163,17 +163,15 @@ return(list(fct="gam",formula=formula,link=substitute(link)))
   xmat1=xmat[xmat$observer==1,]
   p.formula=as.formula(model.formula)
   npar=ncol(model.matrix(p.formula,xmat1))
-  fit <- optimx(rep(0,npar),lnl.removal, method="nlminb", hessian=TRUE,  x1=xmat1,x2=xmat2,models=list(p.formula=p.formula))
-  fit <-attr(fit,"details")[[1]]
-  fit$hessian<-fit$nhatend  
+
 #  fit=optim(par=rep(0,npar),lnl.removal,x1=xmat1,x2=xmat2,models=list(p.formula=p.formula),
 #		  hessian=TRUE,control=list(maxit=5000))
 #  fit$hessian=hessian(lnl.removal,x=fit$par,method="Richardson",x1=xmat1,x2=xmat2,models=list(p.formula=p.formula))
   GAM=FALSE
-  if(modelvalues$fct=="gam") 
-  {
-	GAM=TRUE
-  } else
+#  if(modelvalues$fct=="gam") 
+#  {
+#	GAM=TRUE
+#   } else
 	xmat1=create.model.frame(xmat1,as.formula(model.formula),meta.data)
     xmat2=create.model.frame(xmat2,as.formula(model.formula),meta.data)
     model.formula=as.formula(paste(model.formula,"+offset(offsetvalue)"))
@@ -181,8 +179,14 @@ return(list(fct="gam",formula=formula,link=substitute(link)))
 #  Fit the conditional detection functions using io.glm 
 #
    suppressWarnings(result$mr <- rem.glm (xmat1,model.formula,GAM,datavec2=xmat2))
-   if(GAM)result$mr$data=xmat1
-   result$mr$mr$coefficients=fit$par   
+#   if(GAM)result$mr$data=xmat1
+#
+#  Now use optimx with starting values perturbed by 5%
+#
+fit <- suppressPackageStartupMessages(optimx(1.05*result$mr$coefficients,lnl.removal, method="nlminb", hessian=TRUE,  x1=xmat1,x2=xmat2,models=list(p.formula=p.formula)))
+fit <-attr(fit,"details")[[1]]
+fit$hessian<-fit$nhatend  
+result$mr$mr$coefficients=fit$par   
    result$hessian=fit$hessian	
 #
 #  Compute the L_omega portion of the likelihood value, AIC and hessian
@@ -247,8 +251,11 @@ lnl.removal <- function(par,x1,x2,models)
 ################################################################################
 p.removal.mr <- function(par,x1,x2,models)    
 {
-	xmat1=model.matrix(models$p.formula,x1)
-	xmat2=model.matrix(models$p.formula,x2)
+	x=rbind(x1,x2)
+	dmrows=nrow(x1)
+	xmat=model.matrix(models$p.formula,x)
+	xmat1=xmat[1:dmrows,,drop=FALSE]
+	xmat2=xmat[(dmrows+1):(2*dmrows),,drop=FALSE]
 	p01=rem.p01(xmat1,xmat2,beta=par)
 	p11=rem.p11(xmat1,xmat2,beta=par)
 	pdot=rem.pdot(xmat1,xmat2,beta=par)

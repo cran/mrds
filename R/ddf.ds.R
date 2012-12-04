@@ -47,9 +47,9 @@
 #' @keywords Statistical Models
 #' @examples
 #' 
-#' #
-#' # ddf.ds is called in the following example when ddf is called and method="ds"
-#' #
+#' 
+#' # ddf.ds is called when ddf is called with method="ds"
+#' \donttest{
 #' data(book.tee.data)
 #' region<<-book.tee.data$book.tee.region
 #' egdata<<-book.tee.data$book.tee.dataframe
@@ -61,46 +61,21 @@
 #' plot(result,main="cds - observer 1")
 #' print(dht(result,region,samples,obs,options=list(varflag=0,group=TRUE),se=TRUE))
 #' print(ddf.gof(result))
-#' 
+#' }
 #' 
 ddf.ds <-function(model, data, meta.data=list(), control=list(),call,method="ds")
 {
-# 
-# ddf.ds
-#
-# Fits distance sampling detection function for grouped (binned), ungrouped (unbinned) or mixture of the two.
-#
-# Note: if mixture, width must be set to be >= largest interval endpoint; this could be changed with
-#       a more complicated analysis; likewise, if all binned and bins overlap, the above must also hold;
-#       if bins don't overlap, width must be one of the interval endpoints; same holds for left truncation
-#       Although the mixture analysis works in principle it has not been tested via simulation.
-#
-
-# Arguments:
-#
-#  model     - model list with key function, scale formula, shape formula
-#  data      - dataframe
-#  meta.data - list containing settings controlling data structure, selection
-#  control   - list containing settings controlling model fitting
-#
-
-# Value:
-#
-#  result    - ds model object 
-#
 # Functions Used: 
-#        assign.default.values, process.data, create.ddfobj, setbounds, detfct.fit, flt.var, 
-#        predict(predict.ds), NCovered(NCovered.ds)
-#
+#        assign.default.values, process.data, create.ddfobj, setbounds, 
+#        detfct.fit, flt.var, predict(predict.ds), NCovered(NCovered.ds)
 #
 #   Code structure for optimization with optim
 #
 #    ddf.ds --> detfct.fit --> detfct.fit.opt --> optimx or solnp --> flnl 
 #                   
-#      flnl--> flt.lnl -->
-#              fpt.lnl --> detfct
-#                         tablecgf --> gstdint
-#                         integratedetfct --> detfct, gstdint, tablecgf
+#      flnl--> flpt.lnl --> distpdf ---> detfct
+#                           tablecgf --> gstdint --> integratepdf ---> distpdf
+#                           integratedpdf --> distpdf
 #
 #   Detection function and options are described in ddfobj which is created by create.ddfobj.
 #   That function creates list structure and sets up initial values.
@@ -116,9 +91,6 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(),call,method="ds"
 #
 # Set up meta data values
 #
-  setdoeachint=FALSE
-  if(!is.null(meta.data$doeachint)) setdoeachint=TRUE
-
   meta.data<-assign.default.values(meta.data, left=0, width=NA, binned=FALSE, 
                                    int.range=NA, mono=FALSE, mono.strict=TRUE,
                                    point=FALSE)
@@ -130,7 +102,8 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(),call,method="ds"
                                 lowerbounds=NA, upperbounds=NA, limit=TRUE,
                                 parscale=NA, maxiter=12, standardize=TRUE, 
                                 mono.points=20, mono.tol=1e-7, mono.delta=1e-7,
-                                debug=FALSE,nofit=FALSE)
+                                debug=FALSE,nofit=FALSE,optimx.method="nlminb",
+                                optimx.maxit=300)
 
 #
 #  Save current user options and then set design contrasts to treatment style
@@ -155,12 +128,9 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(),call,method="ds"
 #
 #  31 March 06; added code to use all unique detections (observer=1) if observer is present
 #
-   if(!is.null(xmat$observer))
-   {
-      if(control$limit)
-      {
-         if(length(levels(factor(xmat$observer)))>1)
-         {
+   if(!is.null(xmat$observer)){
+      if(control$limit){
+         if(length(levels(factor(xmat$observer)))>1){
             xmat <- xmat[xmat$observer==levels(factor(xmat$observer))[1],]
             xmat$detected <- rep(1,dim(xmat)[1])
          }
@@ -193,16 +163,25 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(),call,method="ds"
 #  Setup detection model
 #               
   ddfobj <- create.ddfobj(model,xmat,meta.data,control$initial) 
+  # set doeachint=TRUE if a shape formula is used
   if(!is.null(ddfobj$shape) && ncol(ddfobj$shape$dm)>1){
-    doeachint <- TRUE
-  }
-  if(!setdoeachint & !is.null(ddfobj$shape)){
     control$doeachint <- TRUE
   }
+  # set doeachint=TRUE if adj.scale="width" and key not uniform
+  if(ddfobj$type!="unif"&&!is.null(ddfobj$adjustment))
+	  if(ddfobj$adjustment$scale=="width")
+	  {
+	    # setting doeachint to TRUE; 
+		# cannot use integral scaling with adj.scale=width and non-uniform key
+		  control$doeachint=TRUE
+	  }
   initialvalues <- c(ddfobj$shape$parameters,ddfobj$scale$parameters,
                      ddfobj$adjustment$parameters)
-  bounds <- setbounds(control$lowerbounds,control$upperbounds,
+  if(!is.null(initialvalues))
+     bounds <- setbounds(control$lowerbounds,control$upperbounds,
                       initialvalues,ddfobj)
+  else
+	 bounds <- NULL
   misc.options<-list(point=meta.data$point, int.range=meta.data$int.range,
                      showit=control$showit, doeachint=control$doeachint,
                      integral.numeric=control$integral.numeric, breaks=breaks,
@@ -214,27 +193,33 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(),call,method="ds"
                      mono.points=control$mono.points,
                      mono.tol=control$mono.tol,
                      mono.delta=control$mono.delta,
-                     debug=control$debug,nofit=control$nofit)
-
+                     debug=control$debug,nofit=control$nofit
+                    )
   # debug - print the initial values
-  if(misc.options$showit>1){
+  if(misc.options$showit>1 && !is.null(initialvalues)){
     cat("initialvalues=",initialvalues,"\n")
   }
 
 
-# Note there is a difference between maxit (the maximum numbr of iterations
-# for optimx() uses) and maxiter (which is what detfct.fit uses.)
-   optim.options <- list(maxit=300)
+  # Note there is a difference between maxit (the maximum numbr of iterations
+  # for optimx() uses) and maxiter (which is what detfct.fit uses.)
+  optim.options <- list(maxit=control$optimx.maxit,
+                        optimx.method=control$optimx.method)
 
 #
-# Actually do the optimisation!
+# Actually do the optimisation if not just a uniform key!
 #
+  if(is.null(initialvalues))misc.options$nofit <- TRUE
   lt <- detfct.fit(ddfobj,optim.options,bounds,misc.options)
-
+#  else
+#	  lt <- list(par=NULL,value=sum(flpt.lnl(fpar=NULL,ddfobj,misc.options)),converge=0,message="")	  
+#  }
 #
 # add call and others to return values
 #
-  result <- list(call=call,data=data[row.names(data)%in%row.names(xmat),],
+  stored_data=data[row.names(data)%in%row.names(xmat),]
+  stored_data$detected=1
+  result <- list(call=call,data=stored_data,
               model=substitute(model),meta.data=meta.data, control=control,
               method=method,ds=lt,par=lt$par,lnl=-lt$value)
 	  
@@ -248,31 +233,36 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(),call,method="ds"
   }
 
   # 4-Jan-12 dlm sometimes this fails, so wrap it up in a try()
-  result$hessian <- try(flt.var(result$ds$aux$ddfobj, TCI = FALSE, misc.options))
-
+  if(is.null(lt$par))
+     lt$hessian <- NULL	  
+  else
+  {	  
+	  result$hessian <- try(flt.var(result$ds$aux$ddfobj, misc.options))
   # 23-Jan-06 jll   Changed this back to use formula in Buckland et al or it 
   # doesn't match DISTANCE unless the result is singular
-  if(class(result$hessian)=="try-error"){
-    # the hessian returned from solnp() is not what we want, warn about that and don't
-    # return it
-    if(misc.options$mono){
-      cat("First partial hessian calculation failed with monotonicity enforced, no hessian\n")
-    }else{
-      cat("First partial hessian calculation failed; using second-partial hessian\n")
-      result$hessian <- lt$hessian
-    }
-  }else if(length(lt$par)>1){
-    if(class(try(solve(result$hessian),silent=TRUE))=="try-error"){
-      cat("First partial hessian is singular; using second-partial hessian\n")
-      result$hessian <- lt$hessian
+     if(class(result$hessian)=="try-error"){
+    # the hessian returned from solnp() is not what we want, warn about 
+    # that and don't return it
+         if(misc.options$mono){
+            cat("First partial hessian calculation failed with monotonicity enforced, no hessian\n")
+         }else{
+            cat("First partial hessian calculation failed; using second-partial hessian\n")
+            result$hessian <- lt$hessian
+         }
+    }else if(length(lt$par)>1){
+       if(class(try(solve(result$hessian),silent=TRUE))=="try-error"){
+           cat("First partial hessian is singular; using second-partial hessian\n")
+           result$hessian <- lt$hessian
+       }
     }
   }
   modpaste <- paste(model)
   modelvalues <- try(eval(parse(text=modpaste[2:length(modpaste)])))
   class(result$ds) <- c(modelvalues$fct,"ds")
-#
-#   AIC computation
-#
+
+  result$dsmodel <- modpaste
+
+  # AIC computation
   n <- length(xmat$distance)
   npar <- length(lt$par)
   result$criterion <- 2*lt$value + 2*npar

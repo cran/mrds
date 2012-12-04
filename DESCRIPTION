@@ -6,7 +6,7 @@ Title: Mark-Recapture Distance Sampling (mrds)
 LazyLoad: yes
 Author: Jeff Laake <jeff.laake@noaa.gov>, David Borchers
         <dlb@mcs.st-and.ac.uk>, Len Thomas <len@mcs.st-and.ac.uk>,
-        David Miller <dlm22@st-and.ac.uk> and Jon Bishop
+        David Miller <dave@ninepointeightone.net> and Jon Bishop
         <jonb@mcs.st-and.ac.uk>
 Description: This package implements mark-recapture distance sampling
         methods as described in D.L. Borchers, W. Zucchini and Fewster,
@@ -21,8 +21,8 @@ Description: This package implements mark-recapture distance sampling
         Paxton, C.L.G. "Accommodating unmodelled heterogeneity in
         double-observer distance sampling surveys". 2006.  Biometrics
         62:372-378.)
-Version: 2.0.5
-Date: 2012-3-23
+Version: 2.0.9
+Date: 2012-12-04
 Depends: R (>= 2.0.0),optimx,Rsolnp
 Suggests: testthat
 Collate: 'adj.check.order.R' 'adjfct.cos.R' 'adjfct.herm.R'
@@ -36,26 +36,26 @@ Collate: 'adj.check.order.R' 'adjfct.cos.R' 'adjfct.herm.R'
         'ddf.trial.R' 'DeltaMethod.R' 'det.tables.R'
         'detfct.fit.mono.R' 'detfct.fit.opt.R' 'detfct.fit.R'
         'detfct.R' 'dht.deriv.R' 'dht.R' 'dht.se.R' 'ds.function.r'
-        'errors.R' 'flnl.R' 'flt.lnl.R' 'flt.var.R' 'fpt.lnl.r' 'g0.R'
-        'getpar.R' 'gof.ds.R' 'gof.io.fi.R' 'gof.io.R' 'gof.rem.fi.R'
-        'gof.rem.R' 'gof.trial.fi.R' 'gof.trial.R' 'gstdint.R'
-        'hermite.poly.R' 'histline.R' 'integratedetfct.logistic.R'
-        'integratedetfct.R' 'integratelogistic.analytic.R'
-        'integratelogistic.R' 'integratelogisticdup.R' 'io.glm.R'
-        'is.linear.logistic.R' 'is.logistic.constant.R'
-        'keyfct.gamma.R' 'keyfct.hn.R' 'keyfct.hz.R' 'logisticbyx.R'
-        'logisticbyz.R' 'logisticdetfct.R' 'logisticdupbyx.R' 'logit.R'
-        'mcds.R' 'mrds-package.R' 'NCovered.ds.R' 'NCovered.io.fi.R'
-        'NCovered.io.R' 'NCovered.R' 'NCovered.rem.fi.R'
-        'NCovered.rem.R' 'NCovered.trial.fi.R' 'NCovered.trial.R'
-        'p.det.R' 'pcramer.R' 'pdot.dsr.integrate.logistic.R' 'pks.R'
-        'plot_cond.R' 'plot_uncond.R' 'plot.det.tables.R' 'plot.ds.R'
-        'plot.io.fi.R' 'plot.io.R' 'plot.rem.fi.R' 'plot.rem.R'
-        'plot.trial.fi.R' 'plot.trial.R' 'predict.ds.R'
-        'predict.io.fi.R' 'predict.io.R' 'predict.rem.fi.R'
-        'predict.rem.R' 'predict.trial.fi.R' 'predict.trial.R'
-        'print.ddf.gof.R' 'print.det.tables.R' 'print.dht.R'
-        'print.summary.ds.R' 'print.summary.io.fi.R'
+        'errors.R' 'flnl.R' 'flt.var.R' 'g0.R' 'getpar.R' 'gof.ds.R'
+        'gof.io.fi.R' 'gof.io.R' 'gof.rem.fi.R' 'gof.rem.R'
+        'gof.trial.fi.R' 'gof.trial.R' 'gstdint.R' 'hermite.poly.R'
+        'histline.R' 'integratedetfct.logistic.R'
+        'integratelogistic.analytic.R' 'integratelogistic.R'
+        'integratelogisticdup.R' 'io.glm.R' 'is.linear.logistic.R'
+        'is.logistic.constant.R' 'keyfct.gamma.R' 'keyfct.hn.R'
+        'keyfct.hz.R' 'logisticbyx.R' 'logisticbyz.R'
+        'logisticdetfct.R' 'logisticdupbyx.R' 'logit.R' 'mcds.R'
+        'model.description.R' 'mrds-package.R' 'NCovered.ds.R'
+        'NCovered.io.fi.R' 'NCovered.io.R' 'NCovered.R'
+        'NCovered.rem.fi.R' 'NCovered.rem.R' 'NCovered.trial.fi.R'
+        'NCovered.trial.R' 'p.det.R' 'pcramer.R'
+        'pdot.dsr.integrate.logistic.R' 'pks.R' 'plot_cond.R'
+        'plot_uncond.R' 'plot.det.tables.R' 'plot.ds.R' 'plot.io.fi.R'
+        'plot.io.R' 'plot.rem.fi.R' 'plot.rem.R' 'plot.trial.fi.R'
+        'plot.trial.R' 'predict.ds.R' 'predict.io.fi.R' 'predict.io.R'
+        'predict.rem.fi.R' 'predict.rem.R' 'predict.trial.fi.R'
+        'predict.trial.R' 'print.ddf.gof.R' 'print.det.tables.R'
+        'print.dht.R' 'print.summary.ds.R' 'print.summary.io.fi.R'
         'print.summary.io.R' 'print.summary.rem.fi.R'
         'print.summary.rem.R' 'print.summary.trial.fi.R'
         'print.summary.trial.R' 'prob.deriv.R' 'prob.se.R'
@@ -64,7 +64,8 @@ Collate: 'adj.check.order.R' 'adjfct.cos.R' 'adjfct.herm.R'
         'sim.mix.R' 'summary.ds.R' 'summary.io.fi.R' 'summary.io.R'
         'summary.rem.fi.R' 'summary.rem.R' 'summary.trial.fi.R'
         'summary.trial.R' 'survey.region.dht.R' 'tablecgf.R'
-        'test.breaks.R' 'varn.R' 'zzz.R'
-Packaged: 2012-03-27 14:50:20 UTC; JLaake
+        'test.breaks.R' 'varn.R' 'zzz.R' 'print.ddf.R' 'flpt.lnl.r'
+        'integratepdf.r'
+Packaged: 2012-12-04 17:39:52 UTC; JLaake
 Repository: CRAN
-Date/Publication: 2012-03-27 18:01:59
+Date/Publication: 2012-12-04 20:52:28

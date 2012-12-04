@@ -1,0 +1,111 @@
+mrds 2.0.9
+------------
+NEW FEATURES
+
+* New option plot=TRUE/FALSE in qqplot.ddf(), for when you only want the K-S and CvM test statistics, not plotting. dlm(11/13/2012)
+
+BUG FIXES
+
+* Fixed problem when obs dataframe in call to dht (which links observations to samples and regions) contained fields also in observation dataframe. Now only fields needed from obs are selected before merge. dlm(11/13/2012)
+
+mrds 2.0.8
+------------
+* Unchanged version sent out with Distance in summer 2012
+
+mrds 2.0.7
+------------
+
+NEW FEATURES
+
+* Restructured likelihood/integration code for fitting ds models
+
+* Adjustment functions will now work with binned data. Code was added to assure that fields distbegin and distend are available if binned=TRUE and breaks are set as well.
+
+* Added argument adj.exp which if set to TRUE will use key*exp(adj) rather than key*adj to keep f(x)>0
+
+* Added following restrictions for adjustments: if uniform key, adj.scale must be "width"; if non-uniform key and adj.scale="width", doeachint set to TRUE because scale integration will not work.
+
+* Changed code in several functions so a uniform key with no adjustment functions could be used.
+
+* New option plot=TRUE/FALSE in qqplot.ddf(), for when you only want the K-S and CvM test statistics, not plotting.
+
+BUG FIXES
+
+* Fixed inconsistencies in use and documentation of showit argument
+
+* Fixed a bug where groups were not recognised in dht() when the size column occurred in both model data and observation table. (Thanks to Darren Kidney for spotting this.)
+
+
+mrds 2.0.6
+------------
+
+NEW FEATURES
+
+* Example code for binned point count data added to help for ddf
+
+* Modified ddf.rem.fi and ddf.io.fi to use starting values from iterative offset glm to make optimization more robust
+
+* Added a restriction so no one attempts fitting adjustment functions with covariates.
+
+* Added some code to assure all of the necessary fields are available for binned data (binned=TRUE).
+
+
+BUG FIXES
+
+* Patched create.ddfobj so that point counts with binned data would work properly
+
+* Patched ddf.ds such that stored data in object$data has detected=1
+
+* Patched ddf.io.fi to throw an error when optimx() does not converge
+
+* Patched ddf.io.fi and ddf.rem.fi so inclusion of factor(observer) will work in formula
+
+* Patched dht, dht.se and covered.region.dht so it would handle 0 observations
+
+* Suppress package messages from optimx
+
+* Patched fpt.lnl, flt.lnl, print.ddf, model.description, summary.ds, print.summary.ds and coef.io, coef.trial, coef.rem, plot.io, plot.trial, and plot.rem to handle uniform key function.
+
+
+mrds 2.0.5
+------------
+
+NEW FEATURES
+
+* First version submitted to CRAN
+
+BUG FIXES
+
+* Fixed code in dht.se such that it uses sample size from detection model in Satterthwaite approximation rather than size of selected subset of observations.
+
+* Fixed coef functions so they would return parameter estimates for adjustment functions if any.
+
+mrds 2.0.4
+------------
+
+BUG FIXES
+
+* Changed flt.var to compute variance of average p correctly for point transects.
+
+* Numerous changes by dlm to optimization code
+
+* Changes to documentation to remove non-ASCII characters
+
+mrds 2.0.3
+-----------
+
+NEW FEATURES
+
+* Major rewrite to ddf and summary functions to handle adjustment functions
+
+BUG FIXES
+
+* Changes to det.tables and gof functions to use include.lowest=TRUE in calls to cut function
+
+* Changed all usage of T and F to TRUE and FALSE 
+
+
+mrds 2.0.2
+-----------
+
+* For changes in 2.0.2 and earlier see ONEWS
