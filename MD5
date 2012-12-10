@@ -1,6 +1,6 @@
-87b95d81907d72a698964c6031e57db6 *DESCRIPTION
+1ebcd691bf261935dfa792770c92d0a9 *DESCRIPTION
 6dd5f68328660a8ca45f668be1393133 *NAMESPACE
-75049b5dff69d8ca9d26f84bb0f0a708 *NEWS
+26b6ff3df37dde7539211a13a2b96dbb *NEWS
 12e1a6062ae93b2bf981d560970d6c55 *ONEWS
 2c9db7fdd3ae0b57654bf9c1d3ff6d83 *R/DeltaMethod.R
 3868c2e8a25c263df0e5b13cebc745d4 *R/NCovered.R
@@ -141,8 +141,8 @@ c85519f546d1f019d7fce6b36ddacd01 *R/summary.trial.fi.R
 af9b055e69c1d223346fb03d87d37458 *R/tablecgf.R
 b825844fb82394533471d396c9aec791 *R/test.breaks.R
 448247969f1c6065fc0775ad0e1705c1 *R/varn.R
-4b59b336ccef846e3cc04142f6267af6 *R/zzz.R
-9799a144f57a8ac4fd29c7c9ed15de13 *data/book.tee.data.rda
+5e02ea4877213638b943169f2b826ae0 *R/zzz.R
+4df4e97cc07a26c9ca3774e8ad544bdc *data/book.tee.data.rda
 ab3866b9f4f0e145ea0f9b13924b966f *data/pronghorn.rda
 aee2469a734644cff2bfea542a901a87 *data/ptdata.distance.rda
 34be276394873735b1ba3136fc007ace *data/ptdata.dual.rda
@@ -264,4 +264,4 @@ ca6a6f10b8f6d164b74e5799e8509582 *man/survey.region.dht.Rd
 9bb9f863fc0c12df49ec3e8deb4aaacf *man/tablecgf.Rd
 54e2c6949be4d22004897bb6609aa006 *man/test.breaks.Rd
 a7b4b5301fd51bde3bd7c50bd790d0c1 *man/varn.Rd
-10762e234d250c9921a8370c7f18b178 *tests/run-all.R
+e641334f221ca66a480802e22de0a3af *tests/run-all.R
