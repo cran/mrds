@@ -1,3 +1,30 @@
+mrds 2.1.2
+------------
+BUG FIXES
+
+* fixed usage and example lines that were too long
+
+mrds 2.1.1
+------------
+BUG FIXES
+
+* for full independence methods, the calculation for the distance sampling component was for unbinned data only. Code has been added to compute this component correctly for binned data. This required changes to each of the ddf.x.fi routines and for the logistic integration routines.
+
+CHANGES
+
+* Modified flpt.lnl code to set integrals to 1E-25 if <=0 
+
+* In integrate.pdf a vector argument for the integration range is converted to matrix if of length 2.
+
+* ddf.gof will now use breaks set for binned data unless others are specified.
+
+
+NEW FEATURES
+
+* Added threshold detection functions ("th1" and "th2") which required some minor changes in other functions for summary/print.
+
+* Added xlab and ylab arguments to plot functions to over-ride default labels
+
 mrds 2.1.0
 ------------
 CHANGES

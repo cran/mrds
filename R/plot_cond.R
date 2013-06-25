@@ -23,6 +23,8 @@
 #' @param jitter scaling option for plotting points.  Jitter is applied to
 #'   points by multiplying the fitted value by a random draw from a normal
 #'   distribution with mean 1 and sd jitter.  
+#' @param xlab label for x-axis
+#' @param ylab label for y-axis 
 #' @param \dots other graphical parameters, passed to the plotting functions
 #'   (plot, hist, lines, points, etc)
 #' @return NULL
@@ -35,12 +37,13 @@
 #' egdata<<-book.tee.data$book.tee.dataframe
 #' samples<<-book.tee.data$book.tee.samples
 #' obs<<-book.tee.data$book.tee.obs
-#' xx=ddf(dsmodel = ~mcds(key = "hn", formula = ~sex), data = egdata[egdata$observer==1, ], method = "ds", meta.data = list(width = 4))
+#' xx=ddf(dsmodel = ~mcds(key = "hn", formula = ~sex), data = egdata[egdata$observer==1, ],
+#'    method = "ds", meta.data = list(width = 4))
 #' plot(xx,breaks=c(0,.5,1,2,3,4),showpoints=FALSE)
 #' plot(xx,breaks=c(0,.5,1,2,3,4),subset=sex==0)
 #' plot(xx,breaks=c(0,.5,1,2,3,4),subset=sex==1)
 #' }
-"plot_cond" <-function(obs,xmat,gxvalues,est,nc,breaks,showpoints,showlines,maintitle,ylim,angle=-45,density=20,col="black",jitter=NULL,...)
+"plot_cond" <-function(obs,xmat,gxvalues,est,nc,breaks,showpoints,showlines,maintitle,ylim,angle=-45,density=20,col="black",jitter=NULL,xlab="Distance",ylab="Detection probability",...)
 {
    selection <-xmat$detected[xmat$observer!=obs]==1
    selmat <- (xmat[xmat$observer==obs,])[selection,]
@@ -53,7 +56,7 @@
    mhist$density<-prop
    mhist$equidist<-FALSE
    mhist$intensities<-mhist$density
-   histline(mhist$density,breaks=breaks,lineonly=FALSE,ylab="Detection probability",xlab="Distance",ylim=ylim,
+   histline(mhist$density,breaks=breaks,lineonly=FALSE,xlab=xlab,ylab=ylab,ylim=ylim,
 		     fill=TRUE,angle=angle,density=density,col=col,det.plot=TRUE,...) 
    if(showlines)
       lines(est$x,est$p,...)

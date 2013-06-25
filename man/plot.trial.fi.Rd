@@ -7,7 +7,8 @@ sampling model}
     nc = NULL, maintitle = "", showlines = TRUE,
     showpoints = TRUE, ylim = c(0, 1), angle = -45,
     density = 20, col = "black", jitter = NULL,
-    divisions = 25, ...)
+    divisions = 25, xlab = "Distance",
+    ylab = "Detection probability", ...)
 }
 \arguments{
   \item{x}{fitted model from \code{ddf}}
@@ -43,6 +44,10 @@ sampling model}
 
   \item{divisions}{number of divisions for averaging line
   values; default = 25}
+
+  \item{xlab}{label for x-axis}
+
+  \item{ylab}{label for y-axis}
 
   \item{\dots}{other graphical parameters, passed to the
   plotting functions (plot, hist, lines, points, etc)}
@@ -144,20 +149,6 @@ sampling model}
   1, giving the proportion of duplicates with fitted MR
   model averaged over population covariate vales and dots
   for each estimated detection probability. \cr }
-}
-\examples{
-\donttest{
-data(book.tee.data)
-region<<-book.tee.data$book.tee.region
-egdata<<-book.tee.data$book.tee.dataframe
-samples<<-book.tee.data$book.tee.samples
-obs<<-book.tee.data$book.tee.obs
-xx=ddf(dsmodel = ~mcds(key = "hn", formula = ~sex), data = egdata[egdata$observer==1, ], method = "ds", meta.data = list(width = 4))
-par(mfrow=c(2,2))
-plot(xx,breaks=c(0,.5,1,2,3,4),showpoints=FALSE,new=FALSE)
-plot(xx,breaks=c(0,.5,1,2,3,4),subset=sex==0,new=FALSE)
-plot(xx,breaks=c(0,.5,1,2,3,4),subset=sex==1,new=FALSE)
-}
 }
 \author{
   Jeff Laake, Jon Bishop, David Borchers

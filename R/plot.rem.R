@@ -94,26 +94,15 @@
 #'   distribution with mean 1 and sd jitter.  
 #' @param divisions number of divisions for averaging line values; default = 25 
 #' @param new if TRUE, opens new device for each plot; set new=FALSE if you use par(mfrow=..) or layout
+#' @param xlab label for x-axis
+#' @param ylab label for y-axis 
 #' @param \dots other graphical parameters, passed to the plotting functions
 #'   (plot, hist, lines, points, etc)
 #' @return NULL
 #' @author Jeff Laake, Jon Bishop, David Borchers
 #' @keywords plot
-#' @examples
-#' \donttest{
-#' data(book.tee.data)
-#' region<<-book.tee.data$book.tee.region
-#' egdata<<-book.tee.data$book.tee.dataframe
-#' samples<<-book.tee.data$book.tee.samples
-#' obs<<-book.tee.data$book.tee.obs
-#' xx=ddf(dsmodel = ~mcds(key = "hn", formula = ~sex), data = egdata[egdata$observer==1, ], method = "ds", meta.data = list(width = 4))
-#' par(mfrow=c(3,2))
-#' plot(xx,breaks=c(0,.5,1,2,3,4),showpoints=FALSE,new=FALSE)
-#' plot(xx,breaks=c(0,.5,1,2,3,4),subset=sex==0,new=FALSE)
-#' plot(xx,breaks=c(0,.5,1,2,3,4),subset=sex==1,new=FALSE)
-#' }
 plot.rem <- function(x, which=1:6, breaks=NULL, nc=NULL,  maintitle="", showlines=TRUE, showpoints=TRUE, 
-		ylim=c(0,1),angle=-45,density=20,col="black",jitter=NULL,divisions=25,new=TRUE, ...)
+		ylim=c(0,1),angle=-45,density=20,col="black",jitter=NULL,divisions=25,new=TRUE,xlab="Distance",ylab="Detection probability", ...)
 {	
 	model<-x
 #
@@ -163,7 +152,7 @@ plot.rem <- function(x, which=1:6, breaks=NULL, nc=NULL,  maintitle="", showline
 	{
 		if(new& .Platform$GUI=="Rgui")dev.new()
 		plot_uncond(model,1,xmat,gxvalues=p1/delta,nc,finebr=(width/divisions)*(0:divisions),breaks,showpoints,showlines,
-				maintitle,ylim,point=model$meta.data$point,angle=angle,density=density,col=col,jitter=jitter,...)
+				maintitle,ylim,point=model$meta.data$point,angle=angle,density=density,col=col,jitter=jitter,xlab=xlab,ylab=ylab,...)
 	}
 #
 #  Plot pooled unconditional detection function
@@ -172,7 +161,7 @@ plot.rem <- function(x, which=1:6, breaks=NULL, nc=NULL,  maintitle="", showline
 	{
 		if(new& .Platform$GUI=="Rgui")dev.new()
 		plot_uncond(model,3,xmat,gxvalues=(p1+p2*(1-p1))/delta,nc,finebr=(width/divisions)*(0:divisions),breaks,showpoints,showlines,
-				maintitle,ylim,point=model$meta.data$point,angle=angle,density=density,col=col,jitter=jitter,...)
+				maintitle,ylim,point=model$meta.data$point,angle=angle,density=density,col=col,jitter=jitter,xlab=xlab,ylab=ylab,...)
 	}
 
 #
@@ -189,7 +178,7 @@ plot.rem <- function(x, which=1:6, breaks=NULL, nc=NULL,  maintitle="", showline
 		gxvalues2 <- p2[xmat$detected[xmat$observer==2]==1] 
 		gxvalues <- gxvalues/(gxvalues+gxvalues2-gxvalues*gxvalues2)
 		plot_cond(1,data,gxvalues,list(x=est$x,p=est$p1/(est$p1+est$p2-est$p1*est$p2)),nc,breaks,showpoints,showlines,
-				maintitle,ylim,angle=angle,density=density,col=col,jitter=jitter,...)
+				maintitle,ylim,angle=angle,density=density,col=col,jitter=jitter,xlab=xlab,ylab=ylab,...)
 	}
     invisible(NULL)
 }  

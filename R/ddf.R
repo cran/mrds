@@ -107,7 +107,7 @@
 #' \code{breaks} \tab if binned=TRUE, this is a required sequence of break 
 #' points that are used for plotting/gof. They should match \code{distbegin}, 
 #' \code{distend} values if bins are fixed \cr
-#' \code{int.range} \tab an integration range for detection probability \cr 
+#' \code{int.range} \tab an integration range for detection probability; either a vector of 2 or matrix with 2 columns \cr 
 #' \code{mono} \tab constrain the detection function to be (strictly) 
 #' monotonically decreasing (when there are no covariates) \cr 
 #' \code{mono.strict} \tab when TRUE (default when mono=TRUE) strict 
@@ -195,17 +195,22 @@
 #' egdata<<-book.tee.data$book.tee.dataframe
 #' samples<<-book.tee.data$book.tee.samples
 #' obs<<-book.tee.data$book.tee.obs
-#' result=ddf(dsmodel = ~mcds(key = "hn", formula = ~1), data = egdata, method = "ds", meta.data = list(width = 4))
-#' result=ddf(mrmodel = ~glm(~distance), data = egdata, method = "io.fi", meta.data = list(width = 4))
-#' result=ddf(dsmodel = ~cds(key = "hn"), mrmodel = ~glm(~distance), data = egdata, method = "io", meta.data = list(width = 4))
+#' result=ddf(dsmodel = ~mcds(key = "hn", formula = ~1), data = egdata, method = "ds",
+#'  meta.data = list(width = 4))
+#' result=ddf(mrmodel = ~glm(~distance), data = egdata, method = "io.fi", 
+#'   meta.data = list(width = 4))
+#' result=ddf(dsmodel = ~cds(key = "hn"), mrmodel = ~glm(~distance), data = egdata, 
+#'   method = "io", meta.data = list(width = 4))
 #' \donttest{
 #' data(ptdata.single)
 #' ptdata.single$distbegin=(as.numeric(cut(ptdata.single$distance,10*(0:10)))-1)*10
 #' ptdata.single$distend=(as.numeric(cut(ptdata.single$distance,10*(0:10))))*10
-#' model=ddf(data=ptdata.single,dsmodel=~cds(key="hn"),meta.data=list(point=TRUE,binned=TRUE,breaks=10*(0:10)))
+#' model=ddf(data=ptdata.single,dsmodel=~cds(key="hn"),meta.data=list(point=TRUE,
+#' binned=TRUE,breaks=10*(0:10)))
 #' summary(model)
 #' plot(model,main="Single observer binned point data - half normal")
-#' model=ddf(data=ptdata.single,dsmodel=~cds(key="hr"),meta.data=list(point=TRUE,binned=TRUE,breaks=10*(0:10)))
+#' model=ddf(data=ptdata.single,dsmodel=~cds(key="hr"),
+#' meta.data=list(point=TRUE,binned=TRUE,breaks=10*(0:10)))
 #' summary(model)
 #' plot(model,main="Single observer binned point data - hazard rate")
 #' 
@@ -213,11 +218,15 @@
 #' data(ptdata.dual)
 #' ptdata.dual$distbegin=(as.numeric(cut(ptdata.dual$distance,10*(0:10)))-1)*10
 #' ptdata.dual$distend=(as.numeric(cut(ptdata.dual$distance,10*(0:10))))*10
-#' model=ddf(method="io",data=ptdata.dual,dsmodel=~cds(key="hn"),mrmodel=~glm(formula=~distance*observer),meta.data=list(point=TRUE,binned=TRUE,breaks=10*(0:10)))
+#' model=ddf(method="io",data=ptdata.dual,dsmodel=~cds(key="hn"),
+#'  mrmodel=~glm(formula=~distance*observer),
+#' meta.data=list(point=TRUE,binned=TRUE,breaks=10*(0:10)))
 #' summary(model)
 #' par(mfrow=c(2,3))
 #' plot(model,main="Dual observer binned point data",new=FALSE)
-#' model=ddf(method="io",data=ptdata.dual,dsmodel=~cds(key="unif",adj.series="cos", adj.order=1),mrmodel=~glm(formula=~distance*observer),meta.data=list(point=TRUE,binned=TRUE,breaks=10*(0:10)))
+#' model=ddf(method="io",data=ptdata.dual,dsmodel=~cds(key="unif",
+#' adj.series="cos", adj.order=1),mrmodel=~glm(formula=~distance*observer),
+#' meta.data=list(point=TRUE,binned=TRUE,breaks=10*(0:10)))
 #' summary(model)
 #' par(mfrow=c(2,3))
 #' plot(model,main="Dual observer binned point data",new=FALSE)

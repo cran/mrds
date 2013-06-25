@@ -41,7 +41,8 @@
 #' 
 #'	fr(distance,ddfobj,select=NULL,index=NULL,width=NULL,standardize=TRUE,stdint=FALSE)
 #' 
-#'	distpdf(distance,ddfobj,select=NULL,index=NULL,width=NULL,standardize=TRUE,stdint=FALSE,point=FALSE)
+#'	distpdf(distance,ddfobj,select=NULL,index=NULL,width=NULL,standardize=TRUE,
+#'            stdint=FALSE,point=FALSE)
 #' 
 #' @param distance  vector of distances 
 #' @param ddfobj distance sampling object (see \code{\link{create.ddfobj}}) 
@@ -165,6 +166,10 @@ detfct <- function(distance,ddfobj,select=NULL,index=NULL,width=NULL,
     key.vals <- rep(1/width,length(distance))
   }else if(key == "gamma"){
     key.vals <- keyfct.gamma(distance, key.scale, key.shape)
+  }else if(key == "th1"){
+	  key.vals <- keyfct.th1(distance, key.scale, key.shape)
+  }else if(key == "th2"){
+	  key.vals <- keyfct.th2(distance, key.scale, key.shape)
   }
 
   # Adjustment functions
@@ -210,8 +215,11 @@ detfct <- function(distance,ddfobj,select=NULL,index=NULL,width=NULL,
         key.val.0 <- keyfct.gamma(rep(0,length(distance)), key.scale, key.shape)
       }else if(key == "unif"){
         key.val.0 <- rep(1/width,length(distance))
-      }
-	
+	  }else if(key == "th1"){
+		key.val.0 <- keyfct.th1(rep(0,length(distance)), key.scale, key.shape)
+	  }else if(key == "th2"){
+		key.val.0 <- keyfct.th2(rep(0,length(distance)),key.scale, key.shape)
+	  }	
       if(adj.series == "poly"){
         adj.val.0 <- adjfct.poly(rep(0,length(distance)),scaling,
                                  adj.order,adj.parm,adj.exp)
@@ -226,7 +234,7 @@ detfct <- function(distance,ddfobj,select=NULL,index=NULL,width=NULL,
       # Now return the standardized value of the detection function
       return((key.vals*(1+adj.vals))/(key.val.0*(1+adj.val.0)))
 
-    }else{
+    } else{
       return(key.vals*(1+adj.vals))
     }
   }else{
@@ -242,8 +250,11 @@ detfct <- function(distance,ddfobj,select=NULL,index=NULL,width=NULL,
         key.val.0 <- keyfct.gamma(rep(0,length(distance)), key.scale, key.shape)
       }else if(key == "unif"){
         key.val.0 <- rep(1/width,length(distance))
-      }
-      # Now return the standardized value of the detection function
+	  }else if(key == "th1"){
+		key.val.0 <- keyfct.th1(rep(0,length(distance)), key.scale, key.shape)
+	  }else if(key == "th2"){
+		key.val.0 <- keyfct.th2(rep(0,length(distance)),key.scale, key.shape)
+	}      # Now return the standardized value of the detection function
       return(key.vals/key.val.0)
     }else{
       return(key.vals)

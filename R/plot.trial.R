@@ -93,26 +93,18 @@
 #'   points by multiplying the fitted value by a random draw from a normal
 #'   distribution with mean 1 and sd jitter.  
 #' @param divisions number of divisions for averaging line values; default = 25 
+#' @param xlab label for x-axis
+#' @param ylab label for y-axis 
 #' @param \dots other graphical parameters, passed to the plotting functions
 #'   (plot, hist, lines, points, etc)
 #' @return NULL
 #' @author Jeff Laake, Jon Bishop, David Borchers
 #' @keywords plot
-#' @examples
-#' \donttest{
-#' data(book.tee.data)
-#' region<<-book.tee.data$book.tee.region
-#' egdata<<-book.tee.data$book.tee.dataframe
-#' samples<<-book.tee.data$book.tee.samples
-#' obs<<-book.tee.data$book.tee.obs
-#' xx=ddf(dsmodel = ~mcds(key = "hn", formula = ~sex), data = egdata[egdata$observer==1, ], method = "ds", meta.data = list(width = 4))
-#' plot(xx,breaks=c(0,.5,1,2,3,4),showpoints=FALSE)
-#' plot(xx,breaks=c(0,.5,1,2,3,4),subset=sex==0)
-#' plot(xx,breaks=c(0,.5,1,2,3,4),subset=sex==1)
-#' }
+
+
 "plot.trial" <-
 		function(x, which=1:2, breaks=NULL, nc=NULL,  maintitle="", showlines=TRUE, showpoints=TRUE, 
-				ylim=c(0,1),angle=-45,density=20,col="black",jitter=NULL,divisions=25, ...)
+				ylim=c(0,1),angle=-45,density=20,col="black",jitter=NULL,divisions=25,xlab="Distance",ylab="Detection probability",...)
 {
 # plot.trial - Provides plots of fitted functions for a trial object
 #  Uses: calcp.mrds, detfct, plot.cond, plot.uncond
@@ -155,7 +147,7 @@
      g0 <- predict(model$mr$mr,newdata=xmat.trial,type="response")
      gxvalues <- detfct.pooled.values*g0
      plot_uncond(model,1,xmat,gxvalues,nc,finebr=(width/divisions)*(0:divisions),breaks,showpoints,showlines,
-	   	  maintitle,ylim,point=model$meta.data$point,angle=angle,density=density,col=col,jitter=jitter,...)
+	   	  maintitle,ylim,point=model$meta.data$point,angle=angle,density=density,col=col,jitter=jitter,xlab=xlab,ylab=ylab,...)
   }
 # Conditional detection function plot: Obs 1 given obs 2.
 # Duplicate detections with MR model fitted and the estimated detection probability from the MR part of the model
@@ -167,7 +159,7 @@
 	 est<-calcp.mrds(model$mr$mr$formula,model$mr$mr$family$link,model$mr$mr$coefficients,model$mr$data,vname="distance",
 			lower=left,upper=width,divisions=divisions,type=model$meta.data$point,objname="object",obsname="observer")
   	 plot_cond(1,data,gxvalues,list(x=est$x,p=est$p1),nc,breaks,showpoints,showlines,
-			maintitle,ylim,angle=angle,density=density,col=col,jitter=jitter,...)
+			maintitle,ylim,angle=angle,density=density,col=col,jitter=jitter,xlab=xlab,ylab=ylab,...)
   }
 invisible()
 }

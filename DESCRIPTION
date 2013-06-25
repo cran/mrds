@@ -21,8 +21,8 @@ Description: This package implements mark-recapture distance sampling
         Paxton, C.L.G. "Accommodating unmodelled heterogeneity in
         double-observer distance sampling surveys". 2006.  Biometrics
         62:372-378.)
-Version: 2.1.0
-Date: 2012-12-10
+Version: 2.1.2
+Date: 2013-6-25
 Depends: R (>= 2.15),optimx,Rsolnp
 Suggests: testthat
 Collate: 'adj.check.order.R' 'adjfct.cos.R' 'adjfct.herm.R'
@@ -43,7 +43,7 @@ Collate: 'adj.check.order.R' 'adjfct.cos.R' 'adjfct.herm.R'
         'integratelogistic.analytic.R' 'integratelogistic.R'
         'integratelogisticdup.R' 'io.glm.R' 'is.linear.logistic.R'
         'is.logistic.constant.R' 'keyfct.gamma.R' 'keyfct.hn.R'
-        'keyfct.hz.R' 'logisticbyx.R' 'logisticbyz.R'
+        'keyfct.hz.R' 'keyfct.th.R' 'logisticbyx.R' 'logisticbyz.R'
         'logisticdetfct.R' 'logisticdupbyx.R' 'logit.R' 'mcds.R'
         'model.description.R' 'mrds-package.R' 'NCovered.ds.R'
         'NCovered.io.fi.R' 'NCovered.io.R' 'NCovered.R'
@@ -66,6 +66,7 @@ Collate: 'adj.check.order.R' 'adjfct.cos.R' 'adjfct.herm.R'
         'summary.trial.R' 'survey.region.dht.R' 'tablecgf.R'
         'test.breaks.R' 'varn.R' 'zzz.R' 'print.ddf.R' 'flpt.lnl.r'
         'integratepdf.r'
-Packaged: 2012-12-10 17:18:33 UTC; JLaake
+Packaged: 2013-06-25 23:19:08 UTC; JLaake
+NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2012-12-11 07:55:42
+Date/Publication: 2013-06-26 07:40:32

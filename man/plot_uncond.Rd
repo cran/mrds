@@ -5,7 +5,8 @@
   plot_uncond(model, obs, xmat, gxvalues, nc, finebr,
     breaks, showpoints, showlines, maintitle, ylim,
     point = FALSE, return.lines = FALSE, angle = -45,
-    density = 20, col = "black", jitter = NULL, ...)
+    density = 20, col = "black", jitter = NULL,
+    xlab = "Distance", ylab = "Detection probability", ...)
 }
 \arguments{
   \item{model}{fitted model from \code{ddf}}
@@ -49,6 +50,10 @@
   random draw from a normal distribution with mean 1 and sd
   jitter.}
 
+  \item{xlab}{label for x-axis}
+
+  \item{ylab}{label for y-axis}
+
   \item{\dots}{other graphical parameters, passed to the
   plotting functions (plot, hist, lines, points, etc)}
 }
@@ -67,7 +72,8 @@ region<<-book.tee.data$book.tee.region
 egdata<<-book.tee.data$book.tee.dataframe
 samples<<-book.tee.data$book.tee.samples
 obs<<-book.tee.data$book.tee.obs
-xx=ddf(dsmodel = ~mcds(key = "hn", formula = ~sex), data = egdata[egdata$observer==1, ], method = "ds", meta.data = list(width = 4))
+xx=ddf(dsmodel = ~mcds(key = "hn", formula = ~sex), data = egdata[egdata$observer==1, ],
+ method = "ds", meta.data = list(width = 4))
 plot(xx,breaks=c(0,.5,1,2,3,4),showpoints=FALSE)
 plot(xx,breaks=c(0,.5,1,2,3,4),subset=sex==0)
 plot(xx,breaks=c(0,.5,1,2,3,4),subset=sex==1)
