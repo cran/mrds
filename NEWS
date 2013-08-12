@@ -1,3 +1,17 @@
+mrds 2.1.3
+----------
+BUG FIXES
+
+* patched bug in dht which was returning incorrect values in bysample for sample.area and Dhat.
+
+* patched code in dht.se so it would skip over variance component for p when key=unif and p=1.
+
+CHANGES
+
+* modified code in detfct.fit.opt and io and rem functions to adapt to changes in optimx
+
+* removed old depends statements to optimx and Rsolnp; uses import
+
 mrds 2.1.2
 ------------
 BUG FIXES
