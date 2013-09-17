@@ -19,8 +19,8 @@ Description: This package implements mark-recapture distance sampling
     J.L., Southwell, C. and Paxton, C.L.G. "Accommodating unmodelled
     heterogeneity in double-observer distance sampling surveys". 2006.
     Biometrics 62:372-378.)
-Version: 2.1.3
-Date: 2013-8-12
+Version: 2.1.4
+Date: 2013-9-17
 Depends: R (>= 2.15)
 Suggests: testthat
 Collate: 'adj.check.order.R' 'adjfct.cos.R' 'adjfct.herm.R'
@@ -64,7 +64,7 @@ Collate: 'adj.check.order.R' 'adjfct.cos.R' 'adjfct.herm.R'
         'summary.trial.R' 'survey.region.dht.R' 'tablecgf.R'
         'test.breaks.R' 'varn.R' 'zzz.R' 'print.ddf.R' 'flpt.lnl.r'
         'integratepdf.r'
-Packaged: 2013-08-13 14:20:46 UTC; JLaake
+Packaged: 2013-09-23 03:45:46 UTC; JLaake
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2013-08-13 17:06:18
+Date/Publication: 2013-09-23 07:54:59
