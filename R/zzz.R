@@ -1,22 +1,10 @@
-print.mrds.version <- function(){ 
-  library(help=mrds)$info[[1]] -> linfo
+.onAttach<-function(...){
+  # uses packageStartupMessage which can then be
+  # surpressed
 
-  version <- linfo[pmatch("Version",linfo)]
-  built <- linfo[pmatch("Built",linfo)]
+  version <- utils::packageVersion("mrds")
+  built <- utils::packageDescription("mrds",fields="Built")
 
-  um <- strsplit(version," ")[[1]]
-  version <- um[nchar(um)>0][2]
-
-  um <- strsplit(built,"R")[[1]]
-  built <- um[nchar(um)>0][2]
-
-  hello <- paste("This is mrds ",version,"\nBuilt: R",built,sep="")
+  hello <- paste("This is mrds ",version,"\nBuilt: ",built,sep="")
   packageStartupMessage(hello)
-}
-.onAttach<-function(library,pkgname)
-{
-	# this now conforms with new R conventions
-	# uses packageStartupMessage which can then be
-	# surpressed
-	print.mrds.version()
 }

@@ -2,12 +2,10 @@
 \alias{plot_uncond}
 \title{Plot unconditional detection function from distance sampling model}
 \usage{
-  plot_uncond(model, obs, xmat, gxvalues, nc, finebr,
-    breaks, showpoints, showlines, maintitle, ylim,
-    point = FALSE, return.lines = FALSE, angle = -45,
-    density = 20, col = "black", jitter = NULL,
-    xlab = "Distance", ylab = "Detection probability",
-    subtitle = TRUE, ...)
+plot_uncond(model, obs, xmat, gxvalues, nc, finebr, breaks, showpoints,
+  showlines, maintitle, ylim, return.lines = FALSE, angle = -45,
+  density = 20, col = "black", jitter = NULL, xlab = "Distance",
+  ylab = "Detection probability", subtitle = TRUE, ...)
 }
 \arguments{
   \item{model}{fitted model from \code{ddf}}
@@ -36,8 +34,6 @@
 
   \item{ylim}{range of y axis; defaults to (0,1)}
 
-  \item{point}{point count data if TRUE}
-
   \item{return.lines}{if TRUE, returns values for line}
 
   \item{angle}{shading angle for hatching}
@@ -58,32 +54,21 @@
   \item{subtitle}{if TRUE, shows plot type as sub-title}
 
   \item{\dots}{other graphical parameters, passed to the
-  plotting functions (plot, hist, lines, points, etc)}
+  plotting functions (\code{plot}, \code{hist},
+  \code{lines}, \code{points}, etc)}
 }
 \value{
-  NULL
+if \code{return.lines==TRUE} returns dataframe
+\code{average.line} otherwise just plots
 }
 \description{
-  Plots unconditional detection function for observer=obs
-  observations overlays histrogram, average detection
-  function and values for individual observations data.
-}
-\examples{
-\donttest{
-data(book.tee.data)
-region<<-book.tee.data$book.tee.region
-egdata<<-book.tee.data$book.tee.dataframe
-samples<<-book.tee.data$book.tee.samples
-obs<<-book.tee.data$book.tee.obs
-xx=ddf(dsmodel = ~mcds(key = "hn", formula = ~sex), data = egdata[egdata$observer==1, ],
- method = "ds", meta.data = list(width = 4))
-plot(xx,breaks=c(0,.5,1,2,3,4),showpoints=FALSE)
-plot(xx,breaks=c(0,.5,1,2,3,4),subset=sex==0)
-plot(xx,breaks=c(0,.5,1,2,3,4),subset=sex==1)
-}
+Plots unconditional detection function for observer=obs
+observations overlays histrogram, average detection
+function and values for individual observations data.
+Internal function called by \code{plot} methods.
 }
 \author{
-  Jeff Laake, Jon Bishop, David Borchers
+Jeff Laake, Jon Bishop, David Borchers
 }
 \keyword{plot}
 

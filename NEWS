@@ -1,3 +1,64 @@
+mrds 2.1.5
+------------
+
+CHANGES
+ * models with both adjustment terms and covariates are now allowed
+ * mono.check function checks that a detection function is monotonic over its range (at the observed covariate combinations if covariates are included)
+
+
+
+mrds 2.1.4-5
+------------
+
+CHANGES
+
+ * new testthat changes test locations etc, this has been sorted out.
+ * which= argument in plot.* now sorts the which first, so plots will always be in order
+ * plot.ds is now more friendly to par() users, thanks to Jason Roberts for the pointer
+
+BUG FIXES
+
+ * uniform+cosine detection functions were ignored when using monotonicity constraints, now they can be used together
+ * mono.strict=TRUE didn't automatically turn on mono=TRUE, extra logic to correct this
+ * montonicity constraints did not use standardised (g(x)/g(0) detection functions, so if g(x)>1 monotonicity constraints were voilated. Now standardised detection functions are used. Thanks to Len Thomas for noticing this bug.
+
+
+
+mrds 2.1.4-3
+------------
+
+BUG FIX
+
+ * predict.io.fi did not work for new data (thanks to Len Thomas and Phil Hammond for pointing this out)
+
+CHANGES
+
+ * general documentation updates
+ * simplication and re-structuring of internals
+
+mrds 2.1.4-3
+------------
+CHANGES
+
+ * internal re-structuring of summary methods
+ * more tests
+
+mrds 2.1.4-2
+------------
+CHANGES
+
+ * plot.ds now has a new argument, if TRUE (default) it will create a new window for each plot.
+ * general janitorial work inside plotting methods, removing and simplifying old code; (hopefully) no new features.
+
+mrds 2.1.4-1
+------------
+CHANGES
+
+ * Warning now issued when truncation is set to the largest distance by default.
+ 
+ * updated dht documentation
+
+
 mrds 2.1.4
 ----------
 CHANGES

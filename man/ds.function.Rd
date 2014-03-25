@@ -2,8 +2,8 @@
 \alias{ds.function}
 \title{Distance Sampling Functions}
 \usage{
-  ds.function(model, newdata = NULL, obs = "All",
-    conditional = FALSE, pdf = TRUE, finebr)
+ds.function(model, newdata = NULL, obs = "All", conditional = FALSE,
+  pdf = TRUE, finebr)
 }
 \arguments{
   \item{model}{model object}
@@ -25,14 +25,20 @@
   averaged}
 }
 \value{
-  List containing \item{xgrid }{grid of distance values}
-  \item{values }{average detection fct values at the xgrid
-  values}
+List containing \item{xgrid }{grid of distance values}
+\item{values }{average detection fct values at the xgrid
+values}
 }
 \description{
-  Placeholder -- Not functional ----
+Computes values of conditional and unconditional detection
+functions and probability density functions for for
+line/point data for single observer or dual observer in any
+of the 3 configurations (io,trial,rem).
+}
+\details{
+Placeholder -- Not functional ----
 }
 \author{
-  Jeff Laake
+Jeff Laake
 }
 
