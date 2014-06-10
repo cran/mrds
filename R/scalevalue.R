@@ -1,21 +1,11 @@
-scalevalue <-
-function(key.scale, z)
+# Compute scale of detection function
 #
-# scalevalue - computes scale of detection function for a given set of scale covariates and parameters
-#              It uses a log link
-# 
-# Arguments:
+# Uses a log link
+#  key.scale scale parameters
+#  z design matrix for scale covariates
 #
-#  key.scale - scale parameters
-#  z	     - design matrix for scale covariates
-#
-# Value:
-#     
-# Vector of scale values
-#
-{
-  if(is.matrix(z)) 
-    exp(z %*% key.scale)
-  else
-    exp(as.matrix(z) %*% key.scale)
+# returns Vector of scale values
+# documented in ?distpdf
+scalevalue <- function(key.scale, z){
+  exp(as.matrix(z) %*% key.scale)
 }

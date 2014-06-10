@@ -134,7 +134,7 @@ detfct.fit.opt <- function(ddfobj, optim.options, bounds, misc.options,
       if(misc.options$mono){
         # lower and upper bounds of the inequality constraints
         lowerbounds.ic <- rep(0,2*misc.options$mono.points)
-        upperbounds.ic <- rep(1.0^6,2*misc.options$mono.points)
+        upperbounds.ic <- rep(10^6,2*misc.options$mono.points)
 
         lt<-try(solnp(pars=initialvalues, fun=flnl, eqfun=NULL, eqB=NULL,
                       ineqfun=flnl.constr,
@@ -214,7 +214,9 @@ detfct.fit.opt <- function(ddfobj, optim.options, bounds, misc.options,
       # If we don't have convergence what do we do
         refit.count<-refit.count+1
         if(is.null(nrefits)|refit.count<=nrefits){
-          if(showit>=1) errors("No convergence. Refitting ...")
+          if(showit>=1){
+            errors("No convergence. Refitting ...")
+          }
 
           # use the new pars only if they gave a better lnl than last time
           if(lt$value<=lnl.last){
@@ -301,8 +303,9 @@ detfct.fit.opt <- function(ddfobj, optim.options, bounds, misc.options,
         upperbounds[bound.hi & upperbounds<0 &upperbounds > -0.5] <- 0.5
       }
 
-      if(showit>=1)
+      if(showit>=1){
         errors("Refitting ...")
+      }
 
     }
   }

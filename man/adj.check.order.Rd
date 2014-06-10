@@ -2,17 +2,19 @@
 \alias{adj.check.order}
 \title{Check order of adjustment terms}
 \usage{
-adj.check.order(adj.series, adj.order)
+adj.check.order(adj.series, adj.order, key)
 }
 \arguments{
   \item{adj.series}{Adjustment series used
   ('\code{cos}','\code{herm}','\code{poly}')}
 
   \item{adj.order}{Integer to check}
+
+  \item{key}{key function to be used with this adjustment
+  series}
 }
 \value{
-Logical value, true if there have been errors, false
-otherwise.
+Nothing! Just calls \code{stop} if something goes wrong.
 }
 \description{
 'adj.check.order' checks that the Cosine, Hermite or simple
@@ -21,8 +23,10 @@ polynomials are of the correct order.
 \details{
 Only even functions are allowed as adjustment terms. Also
 Hermite polynomials must be of degree at least 4 and Cosine
-of order at least 3. If incorrect terms are supplied then
-\code{errors} is called.
+of order at least 3. Finally, also checks that order of the
+terms >1 for half-normal/hazard-rate, as per p.47 of
+Buckland et al (2001). If incorrect terms are supplied then
+an error is throw via \code{stop}.
 }
 \author{
 David Miller
