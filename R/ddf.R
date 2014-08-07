@@ -143,8 +143,6 @@
 #'    about refitting and bound changes is printed, >=2 - information about
 #'    adjustment term fitting is printed, ==3 -per-iteration parameter
 #'    estimates and log-likelihood printed. \cr
-#'   \code{doeachint} \tab if TRUE forces numerical integration rather than
-#'    interpolation method \cr
 #'   \code{estimate} \tab if FALSE fits model but doesn't estimate predicted
 #'    probabilities \cr
 #'   \code{refit} \tab if TRUE the algorithm will attempt multiple optimizations
@@ -265,8 +263,12 @@ ddf <- function(dsmodel=call(), mrmodel=call(),data, method="ds",
 
   save.options <- options()
   options(contrasts=c("contr.treatment","contr.poly"))
-  library(stats)
-
+#  library(stats)
+  
+  # order data to meet expectations of the code
+  if(!is.null(data$observer) & !is.null(data$object))
+	  data <- data[order(data$object,data$observer),]
+  
   # Check to make sure method is valid and correct model components
   # have been specified
   method <- match.arg(method,c("ds","io","io.fi","trial","trial.fi",

@@ -16,7 +16,8 @@
 #' arguments \code{control},\code{meta.data},and \code{method} are defined the
 #' same as in \code{ddf}.
 #'
-#' @S3method ddf ds
+#' @export
+#' @method ddf ds
 #' @param model model list with key function and scale formula if any
 #' @param data analysis dataframe
 #' @param meta.data list containing settings controlling data structure
@@ -70,7 +71,7 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
   # ddf.ds --> detfct.fit --> detfct.fit.opt --> optimx or solnp --> flnl
   #
   # flnl--> flpt.lnl --> distpdf ---> detfct
-  #                      tablecgf --> gstdint --> integratepdf ---> distpdf
+  #                      gstdint --> integratepdf ---> distpdf
   #                      integratedpdf --> distpdf
   #
   # Detection function and options are described in ddfobj which is
@@ -98,12 +99,12 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
 
 
   # Set up control values
-  control <- assign.default.values(control, showit=0, doeachint=FALSE,
+  control <- assign.default.values(control, showit=0,
                                    estimate=TRUE, refit=TRUE, nrefits=25,
                                    initial=NA, lowerbounds=NA, upperbounds=NA,
                                    limit=TRUE, parscale=NA, maxiter=12,
                                    standardize=TRUE, mono.points=20,
-                                   mono.tol=1e-7, mono.delta=1e-7, debug=FALSE,
+                                   mono.tol=1e-8, mono.delta=1e-7, debug=FALSE,
                                    nofit=FALSE, optimx.method="nlminb",
                                    optimx.maxit=300)
 
@@ -121,7 +122,7 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
   if(is.null(data$object)){
     stop("\nobject field is missing in the data\n")
   }
-  # Next call function to process data based on values of meta.data 
+  # Next call function to process data based on values of meta.data
   datalist <- process.data(data,meta.data,check=FALSE)
   xmat <- datalist$xmat
   meta.data <- datalist$meta.data
@@ -159,19 +160,7 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
   # Setup detection model
   ddfobj <- create.ddfobj(model,xmat,meta.data,control$initial)
 
-  # set doeachint=TRUE if a shape formula is used
-  if(!is.null(ddfobj$shape) && ncol(ddfobj$shape$dm)>1){
-    control$doeachint <- TRUE
-  }
-  # set doeachint=TRUE if adj.scale="width" and key not uniform
-  if(ddfobj$type!="unif"&&!is.null(ddfobj$adjustment)){
-    if(ddfobj$adjustment$scale=="width"){
-      # setting doeachint to TRUE;
-      # cannot use integral scaling with adj.scale=width and non-uniform key
-      control$doeachint <- TRUE
-    }
-  }
-
+  # pull out the initialvalues
   initialvalues <- c(ddfobj$shape$parameters,ddfobj$scale$parameters,
                      ddfobj$adjustment$parameters)
   if(!is.null(initialvalues)){
@@ -182,7 +171,7 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
   }
 
   misc.options<-list(point=meta.data$point, int.range=meta.data$int.range,
-                     showit=control$showit, doeachint=control$doeachint,
+                     showit=control$showit,
                      integral.numeric=control$integral.numeric, breaks=breaks,
                      maxiter=control$maxiter, refit=control$refit,
                      nrefits=control$nrefits, parscale=control$parscale,
@@ -274,7 +263,7 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
   }
 
   if(lt$message == "FALSE CONVERGENCE"){
-    errors("Model fitting did not converge.  Try different initial values or different model")
+    errors("Model fitting did not converge. Try different initial values or different model")
   }else{
     result$fitted <- predict(result,esw=FALSE)$fitted
     if(control$estimate){

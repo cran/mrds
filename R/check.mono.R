@@ -1,6 +1,8 @@
 #' Check that a detection function is monotone
 #'
-#' Check that a fitted detection function is monotone decreasing. Evaluates a series of points over the range of the detection function (left to right truncation) then determines:
+#' Check that a fitted detection function is monotone non-increasing.
+#'
+#' Evaluates a series of points over the range of the detection function (left to right truncation) then determines:
 #'
 #' 1. If the detection function is always less than or equal to its value at the left truncation poin (\code{g(x)<=g(left)}, or usually \code{g(x)<=g(0)}).
 #' 2. (Optionally) The detection function is always monotone decreasing (\code{g(x[i])<=g(x[i-1])}). This check is only performed when \code{strict=TRUE} (the default).
@@ -9,7 +11,7 @@
 #'
 #' For models with covarates in the scale parameter of the detection function is evaluated at all observed covariate combinations.
 #'
-#' Currently parameters in the shape parameter are not supported.
+#' Currently covariates in the shape parameter are not supported.
 #'
 #' @param df a fitted detection function object
 #' @param strict if \code{TRUE} (default) the detection function must be "strictly" monotone, that is that (\code{g(x[i])<=g(x[i-1])}) over the whole range (left to right truncation points).
@@ -46,21 +48,18 @@ check.mono <- function(df,strict=TRUE,n.pts=100,tolerance=1e-6,plot=FALSE,max.pl
   # function to apply over the unique rows
   chpply <- function(this.udat,ddfobj,x,strict,plot=FALSE){
 
-    # build the design matrix for this covariate combination
-    this.udat.save <- this.udat
-    this.udat <- as.matrix(matrix(this.udat,nrow=1)[rep(1,length(x),by=1),])
-
-    # don't set scale matrix if not needed, e.g. for uniform
-    if(!is.null(ddfobj$scale)){
+    # uniform doesn't need a design matrix update, as there is no formula
+    if(ddfobj$type!="unif"){
+      # build the design matrix for this covariate combination
+      this.udat.save <- this.udat
+      this.udat <- as.matrix(matrix(this.udat,nrow=1)[rep(1,length(x),by=1),])
       ddfobj$scale$dm <- this.udat
-    }
 
-    # dummy data matrix for shape
-    # ignore shape covariates at the moment
-    if(!is.null(ddfobj$shape)){
-      ddfobj$shape$dm <- matrix(1,nrow=length(x),ncol=1)
+      # dummy data matrix for shape
+      if(!is.null(ddfobj$shape)){
+        ddfobj$shape$dm <- matrix(1,nrow=length(x),ncol=1)
+      }
     }
-
     # make predictions over the data
     ps <- as.vector(detfct(x,ddfobj,width=right.trunc,standardize=TRUE))
 

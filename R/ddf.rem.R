@@ -25,7 +25,8 @@
 #' \code{mrmodel}, \code{control} and \code{meta.data} are defined the same as
 #' in \code{ddf}.
 #'
-#' @S3method ddf rem
+#' @export
+#' @method ddf rem
 #' @param dsmodel distance sampling model specification; model list with key
 #'   function and scale formula if any
 #' @param mrmodel mark-recapture model specfication; model list with formula
@@ -59,7 +60,7 @@ ddf.rem<-function(dsmodel,mrmodel,data,meta.data=list(),control=list(),call=""){
                                      int.range=NA, point=FALSE)
 
   # Set up control values
-  control <- assign.default.values(control, showit=0, doeachint=FALSE,
+  control <- assign.default.values(control, showit=0,
                                    estimate=TRUE, refit=TRUE, nrefits=25,
                                    initial=NA, lowerbounds=NA, upperbounds=NA,
                                    mono.points=20)
