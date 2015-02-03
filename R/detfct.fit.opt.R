@@ -1,12 +1,11 @@
 #' Fit detection function using key-adjustment functions
 #'
-#' Fit detection function to observed distances
-#' using the key-adjustment
-#' function approach.  If adjustment functions are included it will alternate
+#' Fit detection function to observed distances using the key-adjustment
+#' function approach. If adjustment functions are included it will alternate
 #' between fitting parameters of key and adjustment functions and then all
 #' parameters much like the approach in the CDS and MCDS Distance FORTRAN code.
-#' This function is called by the driver functioin \code{detfct.fit}.  This 
-#' function does the calls the optimx() function (from the package optimx).
+#' This function is called by the driver function \code{detfct.fit}, then
+#' calls \code{\link{optimx}} function.
 #'
 #' @import optimx Rsolnp
 #' @aliases detfct.fit.opt
@@ -135,27 +134,34 @@ detfct.fit.opt <- function(ddfobj, optim.options, bounds, misc.options,
         lowerbounds.ic <- rep(0,2*misc.options$mono.points)
         upperbounds.ic <- rep(10^10,2*misc.options$mono.points)
 
-        #lt<-try(solnp(pars=initialvalues, fun=flnl, eqfun=NULL, eqB=NULL,
-        #              ineqfun=flnl.constr,
-        #              ineqLB=lowerbounds.ic, ineqUB=upperbounds.ic,
-        #              LB=lowerbounds, UB=upperbounds,
-        #              ddfobj=ddfobj, misc.options=misc.options,
-        #              control=list(trace=as.integer(showit),
-        #                           tol=misc.options$mono.tol,
-        #                           delta=misc.options$mono.delta)))
-
-        # this code randomly generates starting values see ?gosolnp
-        lt<-try(gosolnp(pars=initialvalues, fun=flnl, eqfun=NULL, eqB=NULL,
-                      ineqfun=flnl.constr,
-                      ineqLB=lowerbounds.ic, ineqUB=upperbounds.ic,
-                      LB=lowerbounds, UB=upperbounds,
-                      ddfobj=ddfobj, misc.options=misc.options,
-                      control=list(trace=as.integer(showit),
-                                   tol=misc.options$mono.tol,
-                                   delta=misc.options$mono.delta),
-                      distr = rep(1, length(lowerbounds)),
-                      n.restarts = 2, n.sim = 200,
-                      rseed=as.integer(runif(1)*1e9)))
+        if(length(initialvalues)==1){
+          ## gosolnp (below) doesn't work when there is only 1 parameter
+          ## since there is a bug that leaves the optimisation with a vector
+          ## when it is expecting a matrix. To avoid this bug, don't do the
+          ## multiple start points in that case (should only be unif+cos(1))
+          ## models for us.
+          lt<-try(solnp(pars=initialvalues, fun=flnl, eqfun=NULL, eqB=NULL,
+                        ineqfun=flnl.constr,
+                        ineqLB=lowerbounds.ic, ineqUB=upperbounds.ic,
+                        LB=lowerbounds, UB=upperbounds,
+                        ddfobj=ddfobj, misc.options=misc.options,
+                        control=list(trace=as.integer(showit),
+                                     tol=misc.options$mono.tol,
+                                     delta=misc.options$mono.delta)))
+        }else{
+          # this code randomly generates starting values see ?gosolnp
+          lt<-try(gosolnp(pars=initialvalues, fun=flnl, eqfun=NULL, eqB=NULL,
+                        ineqfun=flnl.constr,
+                        ineqLB=lowerbounds.ic, ineqUB=upperbounds.ic,
+                        LB=lowerbounds, UB=upperbounds,
+                        ddfobj=ddfobj, misc.options=misc.options,
+                        control=list(trace=as.integer(showit),
+                                     tol=misc.options$mono.tol,
+                                     delta=misc.options$mono.delta),
+                        distr = rep(1, length(lowerbounds)),
+                        n.restarts = 2, n.sim = 200,
+                        rseed=as.integer(runif(1)*1e9)))
+        }
 
 
         # if that failed then make a dummy object
@@ -189,15 +195,26 @@ detfct.fit.opt <- function(ddfobj, optim.options, bounds, misc.options,
                      control=optim.options,
                      hessian=TRUE, lower=lowerbounds,
                      upper=upperbounds,ddfobj=ddfobj, fitting=fitting,
-                     misc.options=misc.options))
+                     misc.options=misc.options), silent=TRUE)
 
-        topfit.par <- coef(lt, order="value")[1, ]
-        details <- attr(lt,"details")[1,]
-        lt <- as.list(summary(lt, order="value")[1, ])
-        lt$par <- topfit.par
-        lt$message <- ""
-        names(lt)[names(lt)=="convcode"] <- "conv"
-        lt$hessian <- details$nhatend
+        if(class(lt)=="try-error"){
+          lt <- list()
+          lt$conv <- 9
+          lt$value <- lnl.last
+          lt$par <- initialvalues
+
+          if(showit==3){
+            errors("Optimisation failed, ignoring and carrying on...")
+          }
+        }else{
+          topfit.par <- coef(lt, order="value")[1, ]
+          details <- attr(lt,"details")[1,]
+          lt <- as.list(summary(lt, order="value")[1, ])
+          lt$par <- topfit.par
+          lt$message <- ""
+          names(lt)[names(lt)=="convcode"] <- "conv"
+          lt$hessian <- details$nhatend
+        }
       }
 
       # Print debug information

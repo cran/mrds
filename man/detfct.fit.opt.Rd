@@ -46,13 +46,12 @@ fitted detection function model object with the following list
   }}
 }
 \description{
-Fit detection function to observed distances
-using the key-adjustment
-function approach.  If adjustment functions are included it will alternate
+Fit detection function to observed distances using the key-adjustment
+function approach. If adjustment functions are included it will alternate
 between fitting parameters of key and adjustment functions and then all
 parameters much like the approach in the CDS and MCDS Distance FORTRAN code.
-This function is called by the driver functioin \code{detfct.fit}.  This
-function does the calls the optimx() function (from the package optimx).
+This function is called by the driver function \code{detfct.fit}, then
+calls \code{\link{optimx}} function.
 }
 \author{
 Dave Miller; Jeff Laake; Lorenzo Milazzo
