@@ -75,12 +75,13 @@
 #' @seealso \code{\link{dht}}, \code{\link{print.dht}}
 #' @references see \code{\link{dht}}
 #' @keywords utility
-dht.se <- function(model,region.table,samples,obs,options,numRegions,
-                   estimate.table,Nhat.by.sample){
+#' @importFrom stats qnorm qt var
+dht.se <- function(model, region.table, samples, obs, options, numRegions,
+                   estimate.table, Nhat.by.sample){
   #  Functions Used:  DeltaMethod, dht.deriv (in DeltaMethod), varn
 
   # Define function: compute.df
-  compute.df=function(k,type){
+  compute.df<- function(k,type){
     if(type=="O1" | type=="O2"| type=="O3"){
       H.O <- k - 1
       k.h.O <- rep(2, H.O)
@@ -99,7 +100,7 @@ dht.se <- function(model,region.table,samples,obs,options,numRegions,
   }
 
   # First compute variance component due to estimation of detection function
-  # parameters. Thus uses the delta method and produces a v-c matrix if more
+  # parameters. This uses the delta method and produces a v-c matrix if more
   # than one strata
   if(!is.null(model$par)){
     vcov <- solvecov(model$hessian)$inv
@@ -258,6 +259,15 @@ dht.se <- function(model,region.table,samples,obs,options,numRegions,
   estimate.table$cv <- estimate.table$se/estimate.table$Estimate
   estimate.table$cv[is.nan(estimate.table$cv)] <- 0
 
+  # work out the confidence intervals
+  # if the options$ci.width is set, then use that, else default to
+  # 95% CI
+  if(is.null(options$ci.width)){
+    ci.width <- 0.025
+  }else{
+    ci.width <- (1-options$ci.width)/2
+  }
+
   # Use satterthwaite approx for df and log-normal distribution for
   # 95% intervals
   if(options$varflag != 0){
@@ -296,12 +306,12 @@ dht.se <- function(model,region.table,samples,obs,options,numRegions,
     }
 
     estimate.table$df[estimate.table$df < 1 &estimate.table$df >0] <- 1
-    cvalue <- exp((abs(qt(0.025, estimate.table$df)) *
+    cvalue <- exp((abs(qt(ci.width, estimate.table$df)) *
                   sqrt(log(1 + estimate.table$cv^2))))
   }else{
     # intervals for varflag=0; sets df=0
     # and uses normal approximation
-    cvalue <- exp((abs(qnorm(0.025)) * sqrt(log(1 + estimate.table$cv^2))))
+    cvalue <- exp((abs(qnorm(ci.width)) * sqrt(log(1 + estimate.table$cv^2))))
     estimate.table$df <- rep(0,dim(estimate.table)[1])
   }
 

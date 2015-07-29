@@ -2,6 +2,9 @@ mrds - Mark-Recapture Distance Sampling
 =======================================
 
 [![Build Status](https://travis-ci.org/DistanceDevelopment/mrds.svg?        branch=master)](https://travis-ci.org/DistanceDevelopment/mrds)
+[![CRAN (RStudio Mirror) Downloads](http://cranlogs.r-pkg.org/badges/mrds)](http://www.r-pkg.org/pkg/mrds)
+[![CRAN Version](http://www.r-pkg.org/badges/version/mrds)](https://cran.rstudio.com/web/packages/mrds/index.html)
+[![Coverage Status](https://coveralls.io/repos/DistanceDevelopment/mrds/badge.svg?branch=master&service=github)](https://coveralls.io/github/DistanceDevelopment/mrds?branch=master)
 
 # What is `mrds`?
 
@@ -20,9 +23,9 @@ then install `mrds` from github:
 
 Otherwise:
 
-  * One can download a Windows package binary using the ["Releases" tab in github](https://github.com/DistanceDevelopment/mrds/releases). To install in R, from the R menu, use "Packages\Install from Local Zip file" and browse to location of downloaded zip. 
-  * Or, download [package source files](https://github.com/jlaake/mrds/archive/master.zip).
-  * Finally the current stable version of `mrds` is [available on CRAN](http://cran.r-project.org/web/packages/mrds/index.html), though this may be up to a month out of date due to CRAN policy.
+  * One can download a Windows package binary using the ["Releases" tab in github](https://github.com/DistanceDevelopment/mrds/releases). To install in R, from the R menu, use "Packages\Install from Local Zip file" and browse to location of downloaded zip.
+  * Or, download [package source files](https://github.com/DistanceDevelopment/mrds/archive/master.zip).
+  * Finally the current stable version of `mrds` is [available on CRAN](http://cran.r-project.org/package=mrds), though this may be up to a month out of date due to CRAN policy.
 
 
 # References

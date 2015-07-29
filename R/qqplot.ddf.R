@@ -39,13 +39,15 @@
 #'   D.R.Anderson, K.P. Burnham, J.L. Laake, D.L. Borchers, and L. Thomas.
 #'   Oxford University Press.
 #' @keywords utility
+#' @importFrom graphics abline
 qqplot.ddf <- function(model,plot=TRUE,...){
 
   fun <- function(x,z,lt){
-    if(lt)
+    if(lt){
       length(z[z<x])
-    else 
+    }else{
       length(z[z<=x])
+    }
   }
 
   if("ds" %in% class(model)){

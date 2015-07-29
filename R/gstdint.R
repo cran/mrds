@@ -19,6 +19,7 @@
 #'   directly.
 #' @author Jeff Laake and David L Miller
 #' @keywords utility
+#' @importFrom stats pnorm smooth.spline
 gstdint <- function(x, ddfobj, index=NULL,select=NULL,width,
                    standardize=TRUE, point=FALSE, stdint=TRUE, doeachint=FALSE){
 
@@ -79,7 +80,7 @@ gstdint <- function(x, ddfobj, index=NULL,select=NULL,width,
       }
     }
     return(int)
-  }else if(ddfobj$type=="hr" & is.null(ddfobj$adjustment) & !doeachint){
+  }else if(ddfobj$type=="hr" & is.null(ddfobj$adjustment) & !doeachint & !point){
 
     # do the spline shortcut
     # note that this will only work for a given shape parameter

@@ -46,6 +46,9 @@
 #' @return Just plots.
 #' @author Jeff Laake, Jon Bishop, David Borchers
 #' @keywords plot
+#' @importFrom graphics hist par lines points title
+#' @importFrom grDevices devAskNewPage grey
+#' @importFrom stats rnorm
 #' @examples
 #' \donttest{
 #' data(book.tee.data)
@@ -69,25 +72,16 @@ plot.ds <- function(x, which=2, byvar="", breaks=NULL, nc=NULL,
                     pl.col='black', bw.col=grey(0), black.white=FALSE,
                     pl.den=rep(20,1), pl.ang=rep(-45,1), main=NULL,pages=0,...){
 
-  #  Uses: setcov, detfct, histline, test.breaks
+  #  Uses: detfct, histline, test.breaks
   model<-x
   show <- rep(FALSE, 2)
   show[which] <- TRUE
   lower <- 0
-  divisions <- 25
   vname <- "distance"
   dpdata <- model$data
-  dspars <- model$ds$par
   #dpdata$offsetvalue<-0
 
-  dspars <- model$ds$par
-  dsmodel <- model$call$dsmodel[[2]][[2]]
-
   xlab <- "Distance"
-  objname <- "object"
-  obsname <- "observer"
-  detname <- "detected"
-  #nclass<-8
 
   dat<-dpdata
 
@@ -113,8 +107,8 @@ plot.ds <- function(x, which=2, byvar="", breaks=NULL, nc=NULL,
     range.varies <- FALSE
   }
 
-  if(range.varies&showpoints){
-    errors("Point values can be misleading for g(x) when the range varies")
+  if(range.varies & showpoints){
+    warning("Point values can be misleading for g(x) when the range varies")
   }
 
   if(!is.null(substitute(subset))){
@@ -124,8 +118,7 @@ plot.ds <- function(x, which=2, byvar="", breaks=NULL, nc=NULL,
   }
 
   if(all(!selected)){
-    errors("Specified subset is empty.")
-    return()
+    stop("Specified subset is empty.")
   }
 
   if(is.matrix(int.range)){
@@ -148,8 +141,6 @@ plot.ds <- function(x, which=2, byvar="", breaks=NULL, nc=NULL,
 
   zdim <- dim(z)[2]
   n <- length(xmat$distance)
-  intercept.only <- ddfobj$intercept.only
-  theta <- model$par
 
   if(!is.null(breaks)){
     nc <- length(breaks)-1
@@ -246,9 +237,7 @@ plot.ds <- function(x, which=2, byvar="", breaks=NULL, nc=NULL,
   hist.obj <- hist(dat[,vname][keep], breaks=breaks, plot=FALSE)
   hist.obj$density <- hist.obj$counts/expected.counts
   hist.obj$density[expected.counts==0] <- 0
-  freq <- hist.obj$density
   hist.obj$equidist <- FALSE
-
 
 
   ### Actual plotting is here

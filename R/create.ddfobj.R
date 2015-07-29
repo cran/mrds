@@ -30,11 +30,7 @@ create.ddfobj <- function(model,xmat,meta.data,initial){
   ddfobj <- vector("list")
   point <- meta.data$point
   modpaste <- paste(model)
-  modelvalues <- try(eval(parse(text=modpaste[2:length(modpaste)])))
-
-  if(class(modelvalues)=="try-error"){
-    stop("Invalid model specification: ",model)
-  }
+  modelvalues <- eval(parse(text=modpaste[2:length(modpaste)]))
 
   # Specify key function type
   ddfobj$type <- modelvalues$key
@@ -88,7 +84,7 @@ create.ddfobj <- function(model,xmat,meta.data,initial){
   ddfobj$xmat <- create.model.frame(xmat,as.formula(ddfobj$scale$formula),
                                     meta.data,as.formula(ddfobj$shape$formula))
   if(ddfobj$type !="unif"){
-    ddfobj$scale$dm <- setcov(ddfobj$xmat,ddfobj$scale$formula)$cov
+    ddfobj$scale$dm <- setcov(ddfobj$xmat,ddfobj$scale$formula)
     ddfobj$scale$parameters <- rep(0,ncol(ddfobj$scale$dm))
     # Next determine if scale covariate model is intercept only.
     ddfobj$intercept.only <- FALSE
@@ -101,7 +97,7 @@ create.ddfobj <- function(model,xmat,meta.data,initial){
   }
 
   if(!is.null(ddfobj$shape)){
-    ddfobj$shape$dm <- setcov(ddfobj$xmat,ddfobj$shape$formula)$cov
+    ddfobj$shape$dm <- setcov(ddfobj$xmat,ddfobj$shape$formula)
     ddfobj$shape$parameters <- rep(0,ncol(ddfobj$shape$dm))
   }
 
@@ -112,7 +108,7 @@ create.ddfobj <- function(model,xmat,meta.data,initial){
   if(!is.null(ddfobj$scale)){
     if(!ddfobj$intercept.only){
       if(any(is.na(initialvalues$scale))){
-        errors("Model is not full rank - not all parameters are estimable.")
+        warning("Model is not full rank - not all parameters are estimable.")
       }
       ddfobj$scale$dm[,!is.na(initialvalues$scale)]
     }
