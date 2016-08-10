@@ -3,7 +3,7 @@ mrds - Mark-Recapture Distance Sampling
 
 [![Build Status](https://travis-ci.org/DistanceDevelopment/mrds.svg?        branch=master)](https://travis-ci.org/DistanceDevelopment/mrds)
 [![CRAN (RStudio Mirror) Downloads](http://cranlogs.r-pkg.org/badges/mrds)](http://www.r-pkg.org/pkg/mrds)
-[![CRAN Version](http://www.r-pkg.org/badges/version/mrds)](https://cran.rstudio.com/web/packages/mrds/index.html)
+[![CRAN Version](http://www.r-pkg.org/badges/version/mrds)](https://cran.r-project.org/package=mrds)
 [![Coverage Status](https://coveralls.io/repos/DistanceDevelopment/mrds/badge.svg?branch=master&service=github)](https://coveralls.io/github/DistanceDevelopment/mrds?branch=master)
 
 # What is `mrds`?
@@ -31,6 +31,8 @@ Otherwise:
 # References
 
 The following are references for the methods used in the package.
+
+Burt, M. L., D. L. Borchers, K. J. Jenking and T. A. Marques. (2014). "[Using mark-recapture distance sampling methods on line transect surveys](http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12294/abstract)." Methods in Ecology and Evolution 5: 1180-1191.
 
 Buckland, S. T., J. Laake, et al. (2010). "Double observer line transect methods: levels of independence." Biometrics 66: 169-177.
 

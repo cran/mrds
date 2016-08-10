@@ -31,7 +31,7 @@
 #' @aliases detfct adjfct.cos adjfct.herm hermite.poly adjfct.poly keyfct.hn
 #'  keyfct.hz keyfct.gamma scalevalue fx fr distpdf
 #' @usage detfct(distance, ddfobj, select=NULL, index=NULL, width=NULL,
-#'               standardize = TRUE, stdint=FALSE)
+#'               standardize = TRUE, stdint=FALSE, left=0)
 #'
 #' adjfct.cos(distance, scaling = 1, adj.order, adj.parm = NULL, adj.exp=FALSE)
 #'
@@ -48,13 +48,13 @@
 #' keyfct.gamma(distance, key.scale, key.shape)
 #'
 #' fx(distance,ddfobj,select=NULL,index=NULL,width=NULL,
-#'    standardize=TRUE,stdint=FALSE)
+#'    standardize=TRUE,stdint=FALSE, left=0)
 #'
 #' fr(distance,ddfobj,select=NULL,index=NULL,width=NULL,
 #'    standardize=TRUE,stdint=FALSE)
 #'
 #' distpdf(distance,ddfobj,select=NULL,index=NULL,width=NULL,standardize=TRUE,
-#'            stdint=FALSE,point=FALSE)
+#'            stdint=FALSE,point=FALSE, left=0)
 #'
 #' @param distance  vector of distances
 #' @param ddfobj distance sampling object (see \code{\link{create.ddfobj}})
@@ -65,55 +65,55 @@
 #' @param key.shape vector of shape values
 #' @param adj.order vector of adjustment orders
 #' @param adj.parm vector of adjustment parameters
-#' @param width truncation width
-#' @param standardize logical used to decide whether to divide through by the
-#'  function evaluated at 0
+#' @param width (right) truncation width
+#' @param left (left) truncation distance
+#' @param standardize logical used to decide whether to divide through by the function evaluated at 0
 #' @param scaling the scaling for the adjustment terms
 #' @param stdint logical used to decide whether integral is standardized
 #' @param point if TRUE, point counts; otherwise line transects
 #' @param adj.exp if TRUE uses exp(adj) for adjustment to keep f(x)>0
 #' @return
-#' For \code{detfct}, the value is a vector of detection probabilities for the
-#'   input set of x and z.
-#' For \code{keyfct.*}, vector of detection probability for that
-#'   key function at x.
-#' For \code{adjfct.*}, vector of the value of the
-#'   adjustment term at x.
-#' For \code{scalevalue}, the value is a vector of the computed scales for the
-#'   design matrix z.
-#' @author Jeff Laake, David Miller
+#' For \code{detfct}, the value is a vector of detection probabilities
+#' For \code{keyfct.*}, vector of key function evaluations
+#' For \code{adjfct.*}, vector of adjustment series evaluations
+#' For \code{scalevalue}, vector of the scale parameters.
+#' @author Jeff Laake, David L Miller
 #' @seealso  \code{\link{mcds}},  \code{\link{cds}}
-#' @references  Marques and Buckland 2004
-#' Laake and Borchers 2004. in Buckland et al 2004.
-#' Becker, E. F. and P. X. Quang. 2009. A gamma-shaped detection function for
-#' line transect surveys with mark-recapture and covariate data. Journal of
-#' Agricultural Biological and Environmental Statistics 14:207-223.
-distpdf <- function(distance,ddfobj,select=NULL,index=NULL,width=NULL,
-                    standardize=TRUE,stdint=FALSE,point=FALSE){
+#' @references
+#' Marques, F. F. C., & Buckland, S. T. (2003). Incorporating covariates into standard line transect analyses. Biometrics, 59(4), 924-935.
+#'
+#' Buckland, S. T., Anderson, D. R., Burnham, K. P., Laake, J. L., Borchers, D. L., & Thomas, L. (2004). Advanced Distance Sampling. Oxford University Press, Oxford, UK.
+#'
+#' Becker, E. F. and P. X. Quang. 2009. A gamma-shaped detection function for line transect surveys with mark-recapture and covariate data. Journal of Agricultural Biological and Environmental Statistics 14:207-223.
+#' @export detfct
+#' @keywords internal
+distpdf <- function(distance, ddfobj, select=NULL, index=NULL, width=NULL,
+                    standardize=TRUE, stdint=FALSE, point=FALSE, left=0){
 
  if(!point){
-   return(fx(distance=distance,ddfobj=ddfobj,select=select,index=index,
-             width=width,standardize=standardize,stdint=stdint))
+   return(fx(distance=distance, ddfobj=ddfobj, select=select, index=index,
+             width=width, standardize=standardize, stdint=stdint, left=left))
  }else
-   return(fr(distance=distance,ddfobj=ddfobj,select=select,index=index,
-             width=width,standardize=standardize,stdint=stdint))
+   return(fr(distance=distance, ddfobj=ddfobj, select=select, index=index,
+             width=width, standardize=standardize, stdint=stdint))
 }
 
 
-fx <- function(distance,ddfobj,select=NULL,index=NULL,width=NULL,
-               standardize=TRUE,stdint=FALSE){
-  return(detfct(distance,ddfobj,select,index,width,standardize,stdint)/width)
+fx <- function(distance, ddfobj, select=NULL, index=NULL, width=NULL,
+               standardize=TRUE, stdint=FALSE, left=0){
+  return(detfct(distance, ddfobj, select, index, width, standardize, stdint)/
+          (width-left))
 }
 
-fr <- function(distance,ddfobj,select=NULL,index=NULL,width=NULL,
-               standardize=TRUE,stdint=FALSE){
-  return(detfct(distance,ddfobj,select,index,width,standardize,stdint)*
+fr <- function(distance, ddfobj, select=NULL, index=NULL, width=NULL,
+               standardize=TRUE, stdint=FALSE){
+  return(detfct(distance, ddfobj, select, index, width, standardize, stdint)*
          2*distance/width^2)
 }
 
 
-detfct <- function(distance,ddfobj,select=NULL,index=NULL,width=NULL,
-    standardize=TRUE,stdint=FALSE){
+detfct <- function(distance, ddfobj, select=NULL, index=NULL, width=NULL,
+                   standardize=TRUE, stdint=FALSE, left=0){
 
   # Set of observations for computation of detection function can
   # be specified with logical (select) and numeric (index) values.
@@ -196,7 +196,7 @@ detfct <- function(distance,ddfobj,select=NULL,index=NULL,width=NULL,
 
     # Find out if we are scaling by width or by key scale
     if(adj.scale == "width"){
-      scaling <- width
+      scaling <- width-left
     }else{
       scaling <- key.scale
     }
@@ -231,7 +231,7 @@ detfct <- function(distance,ddfobj,select=NULL,index=NULL,width=NULL,
         g.apex <- as.vector(apex.gamma(ddfobj))[1]
         key.val.0 <- keyfct.gamma(g.apex,key.scale, key.shape)
       }else if(key == "unif"){
-        key.val.0 <- rep(1/width,length(distance))
+        key.val.0 <- rep(1/(width-left),length(distance))
       }else if(key == "th1"){
         key.val.0 <- keyfct.th1(rep(0,length(distance)), key.scale, key.shape)
       }else if(key == "th2"){

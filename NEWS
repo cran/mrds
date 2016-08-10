@@ -1,3 +1,21 @@
+mrds 2.1.16
+-----------
+
+* improved predict() method now does the Right Thing with factors
+* Fixed bug in scaling of histograms for point transect pdf plots and points on those plots. Thanks to Erics Howe and Rexstad for reporting these issues.
+* You can now set y axis limits when using plot.ds, defaults should be more sensible for pt+point models. Thanks to Eric Howe for the suggestion.
+* Fixed bug when setting initial values that threw many errors. Thanks to Laura Marshall for spotting this.
+
+mrds 2.1.15
+-----------
+
+* rescaling parameters were not correct, now fixed. Thanks to Laura Marshall for spotting this.
+* coefficients are called coefficients (not a mixture of coefficients and parameters) in summary() results
+* speed-up in io.fi models (thanks to Winston Chang's profvis, showing many unecessary calls to model.matrix)
+* plot.ds now has a pdf= option to plot the probability density function (for point transect models only)
+* assign.par, create.ddfobj and detfct are now exported, so it can be used by dsm (though shouldn't be used by anything else!)
+* fixed bug in left truncation where probability of detection was not calculated correctly. Thanks to Jason Roberts for pointing this out!
+
 mrds 2.1.14
 -----------
 
