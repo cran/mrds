@@ -5,11 +5,12 @@
 #' parameters if any.  If there are user-defined initial values only the
 #' parameters not specified by the user are computed.
 #'
-#' @usage setinitial.ds(ddfobj,width,initial,point)
-#'        sethazard(ddfobj,dmat,width)
+#' @usage setinitial.ds(ddfobj, width, initial, point, left)
+#'        sethazard(ddfobj, dmat, width, left)
 #' @aliases setinitial.ds sethazard
 #' @param ddfobj distance detection function object
 #' @param width half-width of transect or radius of point count
+#' @param left left truncation
 #' @param initial list of user-defined initial values with possible elements
 #'   scale,shape,adjustment
 #' @param point if TRUE, point count data; otherwise, line transect data
@@ -17,9 +18,9 @@
 #' @return \item{scale}{vector of initial scale parameter values}
 #'   \item{shape}{vector of initial shape parameter values}
 #'   \item{adjustment}{vector of initial adjustment function parameter values}
-#' @author Jeff Laake, Dave Miller
+#' @author Jeff Laake, David L Miller
 #' @importFrom stats lm setNames
-setinitial.ds <- function(ddfobj, width, initial, point){
+setinitial.ds <- function(ddfobj, width, initial, point, left){
 
   ftype <- ddfobj$type
   if(ftype == "unif"){
@@ -34,7 +35,7 @@ setinitial.ds <- function(ddfobj, width, initial, point){
 
   # Set shape parameters for special case of cds hazard function
   if(ftype == "hr"){
-    initialvalues <- sethazard(ddfobj, dmat, width)
+    initialvalues <- sethazard(ddfobj, dmat, width, left)
     if(ncol(ddfobj$shape$dm)>1){
       initialvalues$shape <- c(initialvalues$shape,
                                rep(0, ncol(ddfobj$shape$dm)-1))
