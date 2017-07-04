@@ -7,10 +7,15 @@
 #' @param x1 linear predictor for 1, without distance
 #' @param x2 linear predictor for 2, without distance
 #' @author David L Miller
-logisticdupbyx_fast <- function(distance, x1, x2, models, beta, point, beta_distance){
+logisticdupbyx_fast <- function(distance, x1, x2, models, beta, point,
+                                beta_distance){
 
   # function to calculate p/(1+p)
   ologit <- function(p) p/(1+p)
+
+  # vectorise for R 3.4 silliness
+  x1 <- as.vector(x1)
+  x2 <- as.vector(x2)
 
   # first part of the function
   gx1 <- ologit(exp(x1 + distance*beta_distance))

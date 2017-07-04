@@ -17,9 +17,9 @@
 \tabular{ll}{1 \tab histogram of observed distances\cr
              2 \tab histogram of observed distanes with fitted line and points (default)\cr}}
 
-\item{breaks}{user define breakpoints}
+\item{breaks}{user defined breakpoints}
 
-\item{nc}{number of equal-width bins for histogram}
+\item{nc}{number of equal width bins for histogram}
 
 \item{jitter.v}{scaling option for plotting points.  Jitter is applied to points by multiplying the fitted value by a random draw from a normal distribution with mean 1 and sd \code{jitter.v[j]}.  Where \code{j=1,2} corresponds to observer \code{j} and \code{j=3} corresponds to pooled/duplicate detections.}
 
@@ -84,4 +84,3 @@ plot(xx, breaks=c(0, 0.5, 1, 2, 3, 4), pages=1, which=1:2)
 Jeff Laake, Jon Bishop, David Borchers, David L Miller
 }
 \keyword{plot}
-

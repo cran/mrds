@@ -69,6 +69,8 @@ predict.ds <- function(object, newdata=NULL, compute=FALSE, int.range=NULL,
       if(is.vector(int.range)){
         int.range <- cbind(rep(int.range[1], nr),
                            rep(int.range[2], nr))
+      #}else if(nrow(int.range) == (nrow(x)+1)){
+      #int.range <- int.range[2:nrow(int.range), , drop=FALSE]
       }
     }
   }
@@ -88,6 +90,9 @@ predict.ds <- function(object, newdata=NULL, compute=FALSE, int.range=NULL,
 
       newdata_save <- newdata
 
+      # get the data in the model
+      model_dat <- model$data
+
       # do this for both scale and shape parameters
       for(df_par in c("scale", "shape")){
         # if that parameter exists...
@@ -95,8 +100,6 @@ predict.ds <- function(object, newdata=NULL, compute=FALSE, int.range=NULL,
           # save the column names from the design matrix
           znames <- colnames(ddfobj[[df_par]]$dm)
 
-          # get the data in the model
-          model_dat <- model$data
           # pull out the columns in the formula and the distances column
           fvars <- all.vars(as.formula(model$ds$aux$ddfobj[[df_par]]$formula))
 
@@ -109,7 +112,7 @@ predict.ds <- function(object, newdata=NULL, compute=FALSE, int.range=NULL,
           # setup the covariate matrix, using the model data to ensure that
           # the levels are right
           newdata <- rbind(model_dat,
-                           newdata_save[,c("distance", fvars), drop=FALSE])
+                           newdata_save[, c("distance", fvars), drop=FALSE])
           dm <- setcov(newdata, as.formula(ddfobj[[df_par]]$formula))
 
           # now check that the column names are the same for the model
@@ -126,11 +129,27 @@ predict.ds <- function(object, newdata=NULL, compute=FALSE, int.range=NULL,
         }
       }
 
+      # handle data setup for uniform key case
+      if(ddfobj$type == "unif"){
+        model_dat <- model_dat[, "distance", drop=FALSE]
+        newdata <- rbind(model_dat,
+                         newdata_save[, "distance", drop=FALSE])
+        dm <- setcov(newdata, ~1)
+        dm <- dm[(nrow(model_dat)+1):nrow(dm), , drop=FALSE]
+      }
+
+      # get the bins when you have binned data
+      # use the breaks specified in the model!
+      if(model$meta.data$binned){
+        newdata <- create.bins(newdata, model$meta.data$breaks)
+      }
+
       # update xmat too
       datalist <- process.data(newdata, object$meta.data, check=FALSE)
       ddfobj$xmat <- datalist$xmat[(nrow(model_dat)+1):nrow(datalist$xmat),,drop=FALSE]
       # reset newdata to be the right thing
-      newdata <- newdata[(nrow(model_dat)+1):nrow(newdata),,drop=FALSE]
+      newdata <- newdata[(nrow(model_dat)+1):nrow(newdata), , drop=FALSE]
+
     }
 
     # Compute integral of fitted detection function using either logistic or

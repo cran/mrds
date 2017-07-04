@@ -24,7 +24,7 @@
 #'   \code{ddf} model.
 #' @author Jeff Laake
 #' @keywords utility
-summary.ds <- function(object,se=TRUE,N=TRUE,...){
+summary.ds <- function(object, se=TRUE, N=TRUE, ...){
   # Uses: predict.ds (via predict), DeltaMethod, coef.ds (via coef)
 
   # at present f(0) code is commented out; need to understand this further
@@ -32,7 +32,7 @@ summary.ds <- function(object,se=TRUE,N=TRUE,...){
   #{return(1/(pdot*model$meta.data$width))}
 
   model <- object
-  avgp <- function(model,pdot,...){return(pdot)}
+  avgp <- function(model, pdot, ...){return(pdot)}
 
   ddfobj <- model$ds$aux$ddfobj
 
@@ -65,7 +65,7 @@ summary.ds <- function(object,se=TRUE,N=TRUE,...){
     ans$coeff$key.scale <- coeff$scale
 
     # Hazard shape parameter
-    if(ans$key%in%c("gamma","hr","th1","th2")){
+    if(ans$key%in%c("gamma", "hr", "th1", "th2")){
      ans$coeff$key.shape <- coeff$exponent
     }
 
@@ -105,6 +105,13 @@ summary.ds <- function(object,se=TRUE,N=TRUE,...){
 
   if(se & !is.null(ans$coeff)){
     ans$average.p.se <- se.obj$average.p.se
+  }
+
+  # flag if the integration ranges were set
+  ans$int.range <- FALSE
+  if(is.matrix(object$meta.data$int.range) &&
+     nrow(unique(object$meta.data$int.range)) > 1){
+    ans$int.range <- TRUE
   }
 
   class(ans) <- "summary.ds"
