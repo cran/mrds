@@ -24,7 +24,8 @@
 #'   TRUE if they are user set bounds \item setupper: TRUE if they are user set
 #'   bounds \item point: TRUE if point counts and FALSE if line transect \item
 #'   int.range: integration range values \item showit: integer value that
-#'   determines information printed during iteration \item integral.numeric
+#'   determines information printed during iteration \item silent: option 
+#'   to silence errors from detfct.fit.opt \item integral.numeric
 #'   if TRUE compute logistic integrals numerically \item
 #'   breaks: breaks in distance for defined fixed bins for analysis \item
 #'   maxiter: maximum iterations used \item refit: if TRUE, detection function
@@ -44,6 +45,8 @@ detfct.fit <- function(ddfobj, optim.options, bounds, misc.options){
 
   # show debug information
   showit <- misc.options$showit
+  # whether to silence errors from detfct.fit.optim
+  silent <- misc.options$silent
 
   # How small is small?
   epsilon <- sqrt(.Machine$double.eps)
@@ -101,41 +104,34 @@ detfct.fit <- function(ddfobj, optim.options, bounds, misc.options){
     if(showit>=2)
       cat("DEBUG: starting to cycle the optimisation...\n")
 
-    # Fudge to make this work the first time.
-    firstrun<-TRUE
+    while(iter < misc.options$maxiter){
 
-    while((iter < misc.options$maxiter) &&
-           (all((abs(initialvalues-lastvalues)/(epsilon+abs(lastvalues))) <
-               (epsilon/sqrt(nrow(ddfobj$xmat)))) |
-              firstrun)){
-
-      # Variable to count sub iterations... :)
-      metaiter<-0
-      firstrun<-FALSE
+      # Variable to count sub iterations
+      metaiter <- 0
 
       # loop through fitting the adjustment, key and full detection function
-      for(fitting in c("adjust","key","all")){
+      for(fitting in c("adjust", "key", "all")){
 
         # don't do refitting when we are just fitting key or adjustments
-        if(fitting == "adjust" | fitting=="key"){
-          refit.save<-misc.options$refit
-          misc.options$refit<-FALSE
+        if(fitting == "adjust" | fitting == "key"){
+          refit.save <- misc.options$refit
+          misc.options$refit <- FALSE
         }
 
         if(showit >= 2) {
-          cat("DEBUG:",fitting,"iteration ",iter,".",metaiter,"\n")
+          cat("DEBUG:", fitting, "iteration ", iter, ".", metaiter, "\n")
           cat("DEBUG: initial values =",
-               paste(round(initialvalues, 7), collapse=", "),"\n")
+               paste(round(initialvalues, 7), collapse=", "), "\n")
         }
 
         lt <- try(detfct.fit.opt(ddfobj, optim.options, bounds, misc.options,
-                                 fitting=fitting))
+                                 fitting=fitting), silent = silent)
         metaiter <- metaiter + 1
 
         # report failure
         if(all(class(lt)=="try-error")){
           if(showit>=2){
-            cat("DEBUG: iteration",iter,", fitting", fitting,"failed.\n")
+            cat("DEBUG: iteration", iter, ", fitting", fitting, "failed.\n")
           }
           if(fitting=="all"){
             stop("Fitting failed! Try again with better initial values.\n")
@@ -158,7 +154,7 @@ detfct.fit <- function(ddfobj, optim.options, bounds, misc.options){
             lt$par[is.na(lt$par)] <- initialvalues[is.na(lt$par)]
           }
           # Rebuild initialvalues again
-          ddfobj <- assign.par(ddfobj,lt$par)
+          ddfobj <- assign.par(ddfobj, lt$par)
           initialvalues <- getpar(ddfobj)
 
           # save the optimisation history
@@ -167,30 +163,35 @@ detfct.fit <- function(ddfobj, optim.options, bounds, misc.options){
         }
 
         # restore the refit status
-        misc.options$refit<-refit.save
-
+        misc.options$refit <- refit.save
       }
 
-      iter<-iter+1
-    }
+      # did we converge? If so, let's get out of here!
+      if(!(all((abs(initialvalues-lastvalues)/(epsilon+abs(lastvalues))) <
+          (epsilon/sqrt(nrow(ddfobj$xmat)))))){
+        break()
+      }
 
-    if(iter>misc.options$maxiter){
+      iter <- iter + 1
+    } # end while loop
+
+    if(iter > misc.options$maxiter){
       warning("Maximum iterations exceeded!",
           iter,">",misc.options$maxiter,"\n")
     }
 
   }
 
-  if(showit>=1){
+  if(showit >= 1){
     cat("\nDEBUG: Convergence!",
-        "\n       Iteration ",paste(iter,metaiter,sep="."),
-        "\n       Converge   =",lt$converge,
-        "\n       lnl        =",lt$value,
-        "\n       parameters =",paste(round(lt$par,7),collapse=", "),"\n")
+        "\n       Iteration ", paste(iter, metaiter, sep="."),
+        "\n       Converge   =", lt$converge,
+        "\n       lnl        =", lt$value,
+        "\n       parameters =", paste(round(lt$par, 7), collapse=", "), "\n")
   }
 
   # get rid of the first (dummy) line of the optimisation history
-  lt$optim.history<-lt$optim.history[-1,]
+  lt$optim.history <- lt$optim.history[-1, ]
 
   # Return some (hopefully correct) results
   return(lt)

@@ -1,7 +1,7 @@
 #' Prints results of goodness of fit tests for detection functions
 #'
 #' Provides formatted output for results of goodness of fit tests: chi-square,
-#' Kolmogorv-Smirnov and Cramer-von Mises test as approrpriate.
+#' Kolmogorv-Smirnov and Cramer-von Mises test as appropriate.
 #'
 #' @method print ddf.gof
 #' @param x result of call to \code{\link{ddf.gof}}
@@ -90,12 +90,16 @@ print.ddf.gof <- function(x,...){
   }
 
   if(!is.null(gof$dsgof)){
+    if(!is.na(gof$dsgof$ks$Dn)){
       cat("\nDistance sampling Kolmogorov-Smirnov test\n")
-      cat("Test statistic = ", format(gof$dsgof$ks$Dn, digits=5),
-          " P = ", format(gof$dsgof$ks$p, digits=5), "\n")
-      cat("\nDistance sampling Cramer-von Mises test (unweighted)\n")
-      cat("Test statistic = ", format(gof$dsgof$CvM$W, digits=5),
-          " P = ", format(gof$dsgof$CvM$p, digits=5), "\n")
+      cat("Test statistic = ", format(gof$dsgof$ks$Dn, digits=6),
+          " p-value = ", format(gof$dsgof$ks$p, digits=6), "\n", 
+          " (p-value calculated from ",gof$dsgof$boot_success, "/",
+             gof$dsgof$nboot, " bootstraps)", sep="")
+    }
+      cat("\nDistance sampling Cramer-von Mises test (unweighted)\n", sep="")
+      cat("Test statistic = ", format(gof$dsgof$CvM$W, digits=6),
+          " p-value = ", format(gof$dsgof$CvM$p, digits=6), "\n", sep="")
   }
 
   invisible()

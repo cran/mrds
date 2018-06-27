@@ -1,30 +1,28 @@
-#' Q-Q plot, KS and CVM goodness of fit tests for distance detection functions
+#' Quantile-quantile plot and goodness of fit tests for detection functions
 #'
-#' Constructs a quantile-quantile (Q-Q) plot for fitted model as a graphical check of goodness of fit. Computes Kolmogorov-Smirnov and Cramer-von Mises goodness of fit tests for distance sampling models based on single observer survey and double observer survey with independent observer (io) and trial configurations.
+#' Constructs a quantile-quantile (Q-Q) plot for fitted model as a graphical check of goodness of fit. Formal goodness of fit testing for detection function models using Kolmogorov-Smirnov and Cramer-von Mises tests. Both tests are based on looking at the quantile-quantile plot produced by \code{\link{qqplot.ddf}} and deviations from the line x=y.
 #'
-#' \code{pks} computes the p-value for the Kolmogorov-Smirnov test. The function \code{pcramer} was taken from the coda package.  It computes the p-value for the Cramer-von Mises test. Both \code{pks} and \code{pcramer} are used in \code{qqplot.ddf} and need not be called by user. \code{qqplot.ddf} is called from \code{ddf.gof} to evaluate model goodness of fit.
+#' The Kolmogorov-Smirnov test asks the question "what's the largest vertical distance between a point and the y=x line?" It uses this distance as a statistic to test the null hypothesis that the samples (EDF and CDF in our case) are from the same distribution (and hence our model fits well). If the deviation between the y=x line and the points is too large we reject the null hypothesis and say the model doesn't have a good fit.
 #'
-#' @aliases qqplot.ddf pks pcramer
-#' @usage qqplot.ddf(model, plot=TRUE, ...)
-#'
-#'        pcramer(q, eps = 1e-05)
-#'
-#'        pks(Dn,n)
+#' Rather than looking at the single biggest difference between the y=x line and the points in the Q-Q plot, we might prefer to think about all the differences between line and points, since there may be many smaller differences that we want to take into account rather than looking for one large deviation. Its null hypothesis is the same, but the statistic it uses is the sum of the deviations from each of the point to the line.
+#
+#' @section Details:
+
+#' Note that a bootstrap procedure is required to ensure that the p-values from the procedure are correct as the we are comparing the cumulative distribution function (CDF) and empirical distribution function (EDF) and we have estimated the parameters of the detection function.
+
 #'
 #' @param model fitted distance detection function model object
 #' @param plot the Q-Q plot be plotted or just report statistics?
-#' @param n sample size
-#' @param Dn K-S statistic
-#' @param q CvM statistic
-#' @param eps small value that controls accuracy of p-value computation
-#' @param \dots unspecified arguments passed to plot
+#' @param nboot number of replicates to use to calculate p-values for the goodness of fit test statistics
+#' @param ks perform the Kolmogorov-Smirnov test (this involves many bootstraps so can take a while)
+#' @param \dots additional arguments passed to \code{\link{plot}}
 #' @export
 #' @return A list of goodness of fit related values: \item{edf}{matrix of lower
 #'   and upper empirical distribution function values} \item{cdf}{fitted
 #'   cumulative distribution function values} \item{ks}{list with K-S statistic
 #'   (\code{Dn}) and p-value (\code{p})} \item{CvM}{list with CvM statistic
 #'   (\code{W}) and p-value (\code{p})}
-#' @author Jeff Laake
+#' @author Jeff Laake, David L Miller
 #' @seealso \code{\link{ddf.gof}}, \code{\link{cdf.ds}}
 #' @references Burnham, K.P., S.T. Buckland, J.L. Laake, D.L. Borchers, T.A.
 #'   Marques, J.R.B. Bishop, and L. Thomas. 2004.  Further topics in distance
@@ -33,8 +31,40 @@
 #'   Oxford University Press.
 #' @keywords utility
 #' @importFrom graphics abline
-qqplot.ddf <- function(model,plot=TRUE,...){
+qqplot.ddf <- function(model, plot=TRUE, nboot=100, ks=FALSE, ...){
 
+  # get the edf/cdf values
+  edf_cdf <- get_edf_cdf(model)
+
+  if(plot){
+    plot(edf_cdf$upper.edf, edf_cdf$cdfvalues,
+         xlab="Empirical cdf", ylab="Fitted cdf",
+         xlim=c(0,1), ylim=c(0,1), asp=1, ...)
+    abline(0, 1, ...)
+  }
+
+  # don't do KS if the model is not "ds"
+  if(!("ds" %in% class(model)) & ks){
+    warning("Can't calculate Kolmogorov-Smirnov p-value for non-\"ds\" models, only calculating Cramer-von Mises")
+    ks <- FALSE
+  }
+
+  # do the tests
+  gof_p <- gof.pvalues(model, ks=ks, nboot=nboot)
+
+  # build return object
+  return(list(edf=cbind(edf_cdf$lower.edf, edf_cdf$upper.edf),
+              cdf=edf_cdf$cdfvalues,
+              ks=list(Dn=gof_p$Dn, p=gof_p$ks),
+              CvM=list(W=gof_p$W, p=gof_p$cramer),
+              nboot =  attr(gof_p, "nboot"),
+              boot_success = attr(gof_p, "boot_success")
+             )
+        )
+}
+
+
+get_edf_cdf <- function(model){
   fun <- function(x, z, lt){
     if(lt){
       length(z[z<x])
@@ -117,18 +147,12 @@ qqplot.ddf <- function(model,plot=TRUE,...){
   lower.edf <- (unlist(sapply(cdfvalues, fun, z=cdfvalues, lt=TRUE)))/n
   upper.edf <- (unlist(sapply(cdfvalues, fun, z=cdfvalues, lt=FALSE)))/n
 
-  if(plot){
-    plot(upper.edf, cdfvalues, xlab="Empirical cdf", ylab="Fitted cdf",
-         xlim=c(0,1), ylim=c(0,1), asp=1, ...)
-    abline(0, 1, ...)
-  }
+  return(list(lower.edf = lower.edf,
+              upper.edf = upper.edf,
+              cdfvalues = cdfvalues,
+              n         = n))
 
-  Dn <- max(max(abs(lower.edf-cdfvalues)), max(abs(upper.edf-cdfvalues)))
-  W <- 1/(12*n) + sum((cdfvalues - ((1:n)-.5)/n)^2)
-  return(list(edf=cbind(lower.edf, upper.edf),
-              cdf=cdfvalues,
-              ks=list(Dn=Dn, p=pks(Dn, n)),
-              CvM=list(W=W, p=1-pcramer(W))
-             )
-        )
 }
+
+
+

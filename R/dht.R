@@ -31,7 +31,7 @@
 #'
 #' In general if any covariates are used in the models, the default \code{varflag=2} is preferable as the estimated abundance will take into account variability due to covariate effects. If the population is clustered the mean group size and standard error is also reported.
 #'
-#' For options \code{1} and \code{2}, it is then possible to choose one of the estimator forms given in Fewster et al (2009) : \code{"R2"}, \code{"R3"}, \code{"R4"}, \code{"S1"}, \code{"S2"}, \code{"O1"}, \code{"O2"} or \code{"O3"} by specifying the \code{ervar=} option. By default \code{"R2"} is used. See \code{\link{varn}} and Fewster et al (2009) for further details on these estimators.
+#' For options \code{1} and \code{2}, it is then possible to choose one of the estimator forms given in Fewster et al (2009) for line transects: \code{"R2"}, \code{"R3"}, \code{"R4"}, \code{"S1"}, \code{"S2"}, \code{"O1"}, \code{"O2"} or \code{"O3"} by specifying the \code{ervar=} option (default \code{"R2"}). For points estimator \code{"P3"} is the only option. See \code{\link{varn}} and Fewster et al (2009) for further details on these estimators.
 #'
 #' @param model ddf model object
 #' @param region.table \code{data.frame} of region records. Two columns: \code{Region.Label} and \code{Area}.
@@ -64,11 +64,11 @@
 #'  Several options are available to control calculations and output:
 #'
 #' \describe{
-#'  \item{\code{ci.width}}{Confidence iterval width, expressed as a decimal between 0 and 1 (default \code{0.95}, giving a 95\% CI)}
+#'  \item{\code{ci.width}}{Confidence interval width, expressed as a decimal between 0 and 1 (default \code{0.95}, giving a 95\% CI)}
 #'  \item{\code{pdelta}}{delta value for computing numerical first derivatives (Default: 0.001)}
 #'  \item{\code{varflag}}{0,1,2 (see "Uncertainty") (Default: \code{2})}
 #'  \item{\code{convert.units}}{ multiplier for width to convert to units of length (Default: \code{1})}
-#'  \item{\code{ervar}}{encounter rate variance type (see "Uncertainty" and \code{type} argument of \code{\link{varn}}). (Default: \code{"R2"})}
+#'  \item{\code{ervar}}{encounter rate variance type (see "Uncertainty" and \code{type} argument of \code{\link{varn}}). (Default: \code{"R2"} for lines and \code{"P3"} for points)}
 #'}
 #'
 #' @author Jeff Laake, David L Miller
@@ -345,6 +345,19 @@ dht <- function(model,region.table,sample.table, obs.table=NULL, subset=NULL,
   # Assign default values to options
   options <- assign.default.values(options, pdelta = 0.001, varflag = 2,
                                    convert.units = 1, ervar="R2")
+
+  ## break if we use anything other than P3 with points or P3 with lines
+  if(options$ervar=="P3" & !model$meta.data$point){
+    stop("Encounter rate variance estimator P3 may only be used with point transects, set with options=list(ervar=...)")
+  }
+
+  # switch to the P3 estimator if using points
+  if(model$meta.data$point){
+    if(options$ervar != "P3"){
+      warning("Point transect encounter rate variance can only use estimator P3, switching to this estimator.")
+    }
+    options$ervar <- "P3"
+  }
 
   # Convert width value
   width <- model$meta.data$width * options$convert.units
