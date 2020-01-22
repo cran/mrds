@@ -17,15 +17,18 @@
 #' @param int.range integration range for variable range analysis; either vector or 2 column matrix.
 #' @param esw if \code{TRUE}, returns effective strip half-width (or effective area of detection for point transect models) integral from 0 to the truncation distance (\code{width}) of \eqn{p(y)dy}; otherwise it returns the integral from 0 to truncation width of \eqn{p(y)\pi(y)} where \eqn{\pi(y)=1/w} for lines and \eqn{\pi(y)=2r/w^2} for points.
 #' @param integrate for \code{*.fi} methods, see Details below.
+#' @param se.fit for \code{*.ds} models only, generate standard errors on the predicted probabilities of detection (or ESW if \code{esw=TRUE}), stored in the \code{se.fit} element
 #' @param \dots for S3 consistency
-#' @usage \method{predict}{ds}(object, newdata, compute=FALSE, int.range=NULL, esw=FALSE, ...)
-#'        \method{predict}{io.fi}(object, newdata, compute=FALSE, int.range=NULL, integrate=FALSE, ...)
-#'        \method{predict}{io}(object, newdata, compute=FALSE, int.range=NULL, ...)
-#'        \method{predict}{trial}(object, newdata, compute=FALSE, int.range=NULL, ...)
-#'        \method{predict}{trial.fi}(object, newdata, compute=FALSE, int.range=NULL, integrate=FALSE, ...)
-#'        \method{predict}{rem}(object, newdata, compute=FALSE, int.range=NULL, ...)
-#'        \method{predict}{rem.fi}(object, newdata, compute=FALSE, int.range=NULL, integrate=FALSE, ...)
+#' @usage \method{predict}{ds}(object, newdata=NULL, compute=FALSE, int.range=NULL, esw=FALSE, se.fit=FALSE, ...)
+#'        \method{predict}{io.fi}(object, newdata=NULL, compute=FALSE, int.range=NULL, integrate=FALSE, ...)
+#'        \method{predict}{io}(object, newdata=NULL, compute=FALSE, int.range=NULL, ...)
+#'        \method{predict}{trial}(object, newdata=NULL, compute=FALSE, int.range=NULL, ...)
+#'        \method{predict}{trial.fi}(object, newdata=NULL, compute=FALSE, int.range=NULL, integrate=FALSE, ...)
+#'        \method{predict}{rem}(object, newdata=NULL, compute=FALSE, int.range=NULL, ...)
+#'        \method{predict}{rem.fi}(object, newdata=NULL, compute=FALSE, int.range=NULL, integrate=FALSE, ...)
 #' @return For all but the exceptions below, the value is a list with a single element: \code{fitted}, a vector of average detection probabilities or esw values for each observation in the original data or\code{newdata}
+#'
+#' For \code{predict.ds}, if \code{se.fit=TRUE} there is an additional element \code{$se.fit}, which contains the standard errors of the probabilities of detection or ESW.
 #'
 #' For \code{predict.io.fi},\code{predict.trial.fi},\code{predict.rem.fi} with \code{integrate=TRUE}, the value is a list with one element: \code{fitted}, which is a vector of integrated (average) detection probabilities for each observation in the original data or \code{newdata}.
 #'
@@ -44,7 +47,7 @@
 #' @importFrom stats predict
 # Uses: integratedetfct, integratedetfct.logistic
 predict.ds <- function(object, newdata=NULL, compute=FALSE, int.range=NULL,
-                       esw=FALSE, ...){
+                       esw=FALSE, se.fit=FALSE, ...){
   model <- object
   ltmodel <- model$ds
   x <- ltmodel$aux$ddfobj$xmat
@@ -88,17 +91,21 @@ predict.ds <- function(object, newdata=NULL, compute=FALSE, int.range=NULL,
     # Extract other values from model object
     if(!is.null(newdata)){
 
-
       # set the distance column to be the left truncation distance
       # this gets around an issue that Nat Kelly found where later process.data
       # will remove entires with distance < left truncation
+      # BUT save the NAs!
+      nas <- is.na(newdata$distance)
       newdata$distance <- left
-
+      newdata$distance[nas] <- NA
 
       newdata_save <- newdata
 
       # get the data in the model
       model_dat <- model$data
+
+      # counter for NAs...
+      naind <- rep(FALSE, nrow(newdata))
 
       # do this for both scale and shape parameters
       for(df_par in c("scale", "shape")){
@@ -114,7 +121,13 @@ predict.ds <- function(object, newdata=NULL, compute=FALSE, int.range=NULL,
             stop("columns in `newdata` do not match those in fitted model\n")
           }
 
-          model_dat <- model_dat[,c("distance", fvars), drop=FALSE]
+          model_dat <- model_dat[, c("distance", fvars), drop=FALSE]
+
+          if(df_par=="scale"){
+            # which rows have NAs?
+            naind <- naind | apply(newdata_save[, c("distance", fvars), drop=FALSE],
+                                   1, function(x) any(is.na(x)))
+          }
 
           # setup the covariate matrix, using the model data to ensure that
           # the levels are right
@@ -124,12 +137,12 @@ predict.ds <- function(object, newdata=NULL, compute=FALSE, int.range=NULL,
 
           # now check that the column names are the same for the model
           # and prediction data matrices
-          if(!identical(colnames(dm), znames) || any(is.na(newdata))){
+          if(!identical(colnames(dm), znames)){
             stop("fields or factor levels in `newdata` do not match data used in fitted model\n")
           }
 
           # get only the new rows for prediction
-          dm <- dm[(nrow(model_dat)+1):nrow(dm),,drop=FALSE]
+          dm <- dm[(nrow(model_dat)+1):nrow(dm), , drop=FALSE]
           # assign that!
           ddfobj[[df_par]]$dm <- dm
 
@@ -139,6 +152,9 @@ predict.ds <- function(object, newdata=NULL, compute=FALSE, int.range=NULL,
       # handle data setup for uniform key case
       if(ddfobj$type == "unif"){
         model_dat <- model_dat[, "distance", drop=FALSE]
+        # which rows have NAs?
+        naind <- any(is.na(newdata_save$distance))
+
         newdata <- rbind(model_dat,
                          newdata_save[, "distance", drop=FALSE])
         dm <- setcov(newdata, ~1)
@@ -148,12 +164,19 @@ predict.ds <- function(object, newdata=NULL, compute=FALSE, int.range=NULL,
       # get the bins when you have binned data
       # use the breaks specified in the model!
       if(model$meta.data$binned){
-        newdata <- create.bins(newdata, model$meta.data$breaks)
+        nanana <- apply(newdata[, c("distance", fvars), drop=FALSE],
+                        1, function(x) any(is.na(x)))
+        newdata_b <- create.bins(newdata[!nanana, , drop=FALSE], model$meta.data$breaks)
+        newdata$distbegin <- NA
+        newdata$distend <- NA
+        newdata[!nanana, ] <- newdata_b
       }
 
       # update xmat too
       datalist <- process.data(newdata, object$meta.data, check=FALSE)
       ddfobj$xmat <- datalist$xmat[(nrow(model_dat)+1):nrow(datalist$xmat),,drop=FALSE]
+      ddfobj$xmat <- ddfobj$xmat[!naind, , drop=FALSE]
+      int.range <- int.range[!naind, , drop=FALSE]
       # reset newdata to be the right thing
       newdata <- newdata[(nrow(model_dat)+1):nrow(newdata), , drop=FALSE]
 
@@ -170,6 +193,13 @@ predict.ds <- function(object, newdata=NULL, compute=FALSE, int.range=NULL,
     int1 <- integratepdf(ddfobj, select=rep(TRUE, nrow(ddfobj$xmat)),
                          width=width, int.range=int.range, standardize=TRUE,
                          point=point, left=left, doeachint=TRUE)
+
+    # do the switcheroo and pad with NAs where necessary
+    if(exists("naind")){
+      rr <- rep(NA, nrow(newdata))
+      rr[!naind] <- int1
+      int1<-rr
+    }
   }else{
     # If the predicted values don't need to be computed, then use the values
     # in the model object (model$fitted) and change to integral (esw) values.
@@ -207,5 +237,21 @@ predict.ds <- function(object, newdata=NULL, compute=FALSE, int.range=NULL,
     names(fitted) <- newdata$object
   }
 
-  return(list(fitted=fitted))
+  # create the return object
+  ret <- list(fitted=fitted)
+
+  # get model standard errors
+  if(se.fit){
+    # create a dummy function
+    predict_f <- function(par, model, newdata, esw){
+      model$par <- par
+      predict(model, compute=TRUE, newdata=newdata, esw=esw)$fitted
+    }
+    ret$se.fit <- sqrt(diag(DeltaMethod(object$par, predict_f,
+                                        solve(object$hessian),
+                                        esw=esw, newdata=newdata, model=object,
+                                        delta=1e-8)$variance))
+  }
+
+  return(ret)
 }

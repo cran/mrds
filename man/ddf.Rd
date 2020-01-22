@@ -4,8 +4,14 @@
 \alias{ddf}
 \title{Distance Detection Function Fitting}
 \usage{
-ddf(dsmodel = call(), mrmodel = call(), data, method = "ds",
-  meta.data = list(), control = list())
+ddf(
+  dsmodel = call(),
+  mrmodel = call(),
+  data,
+  method = "ds",
+  meta.data = list(),
+  control = list()
+)
 }
 \arguments{
 \item{dsmodel}{distance sampling model specification}
@@ -151,7 +157,7 @@ analyses are truncated (i.e., the last interval does not go to infinity),
 the transect width (and the left truncation point if there is a blindspot
 below the aircraft) can potentially change for each observation. The
 argument \code{int.range} can also be entered as a matrix with 2 columns
-(left and width) and a row for each observation.
+(left and width) and a row for each observation. 
 
 The argument \code{control} is a list that enables various analysis options
 to be set.  It is not necessary to set any of these for most analyses.  They
@@ -173,6 +179,8 @@ infrequently.  The list values include:
   \item{\code{optimx.method}}{one (or a vector of) string(s) giving the optimisation method to use. If more than one is supplied, the results from one are used as the starting values for the next. See \code{\link{optimx}}}
   \item{\code{optimx.maxit}}{maximum number of iterations to use in the optimisation.}
   \item{\code{silent}}{silences warnings within ds fitting method (helpful for running many times without generating many warning/error messages).}}
+
+Examples of distance sampling analyses are available at \url{http://examples.distancesampling.org/}.
 }
 \examples{
 # load data

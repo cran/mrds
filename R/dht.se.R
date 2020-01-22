@@ -119,7 +119,7 @@ dht.se <- function(model, region.table, samples, obs, options, numRegions,
     # when there are no sighings
     if(nrow(nobs) > 0){
       Nhat.by.sample <- merge(Nhat.by.sample, nobs, by.x = "Label",
-          by.y = "Label", all.x = TRUE)
+                              by.y = "Label", all.x = TRUE)
       Nhat.by.sample$n[is.na(Nhat.by.sample$n)] <- 0
     }else{
       Nhat.by.sample <- cbind(Nhat.by.sample, n = rep(0,nrow(Nhat.by.sample)))
@@ -189,13 +189,9 @@ dht.se <- function(model, region.table, samples, obs, options, numRegions,
                                      stratum.data$n, type=options$ervar)/
                                 sum(stratum.data$n)^2 + Ni^2 * vars/sbar^2
       }else{
-        if(options$varflag==2){
-          vc2[i] <- varn(stratum.data$Effort.x/(scale[i] * Li),
-                         stratum.data$Nhat/scale[i], type=options$ervar)
-        }else{
-          vc2[i] <- varn(stratum.data$Effort.x/(scale[i] * Li),
-                        stratum.data$Nhat/scale[i], type=options$ervar)
-        }
+        # varflag ==2
+        vc2[i] <- varn(stratum.data$Effort.x/(scale[i] * Li),
+                       stratum.data$Nhat/scale[i], type=options$ervar)
       }
     }
   }
