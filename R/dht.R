@@ -34,13 +34,12 @@
 #' For options \code{1} and \code{2}, it is then possible to choose one of the estimator forms given in Fewster et al (2009) for line transects: \code{"R2"}, \code{"R3"}, \code{"R4"}, \code{"S1"}, \code{"S2"}, \code{"O1"}, \code{"O2"} or \code{"O3"} by specifying the \code{ervar=} option (default \code{"R2"}). For points estimator \code{"P3"} is the only option. See \code{\link{varn}} and Fewster et al (2009) for further details on these estimators.
 #'
 #' @param model ddf model object
-#' @param region.table \code{data.frame} of region records. Two columns: \code{Region.Label} and \code{Area}.
+#' @param region.table \code{data.frame} of region records. Two columns: \code{Region.Label} and \code{Area}. If only density is required, one can set \code{Area=0} for all regions.
 #' @param sample.table \code{data.frame} of sample records. Three columns: \code{Region.Label}, \code{Sample.Label}, \code{Effort}.
 #' @param obs.table \code{data.frame} of observation records with fields: \code{object}, \code{Region.Label}, and \code{Sample.Label} which give links to \code{sample.table}, \code{region.table} and the data records used in \code{model}. Not necessary if the \code{data.frame} used to create the model contains \code{Region.Label}, \code{Sample.Label} columns.
 #' @param subset subset statement to create \code{obs.table}
 #' @param se if \code{TRUE} computes standard errors, coefficient of variation and confidence intervals (based on log-normal approximation). See "Uncertainty" below.
 #' @param options a list of options that can be set, see "\code{dht} options", below.
-#' @export
 #' @return list object of class \code{dht} with elements:
 #' \item{clusters}{result list for object clusters}
 #' \item{individuals}{result list for individuals}
@@ -107,6 +106,8 @@
 #'   D.R.Anderson, K.P. Burnham, J.L. Laake, D.L. Borchers, and L. Thomas.
 #'   Oxford University Press.
 #' @keywords utility
+#' @importFrom stats aggregate
+#' @export
 dht <- function(model,region.table,sample.table, obs.table=NULL, subset=NULL,
                 se=TRUE, options=list()){
   # Functions Used:  assign.default.values, create.varstructure,
@@ -126,11 +127,15 @@ dht <- function(model,region.table,sample.table, obs.table=NULL, subset=NULL,
     average.p <- nrow(obs)/sum(Nhat.by.sample$Nhat)
 
     # Scale up abundances to survey region
-    # jll 19-Jan-05 - sort Nhat.by.sample by Region.Label and Sample.Label
-    width <- (model$meta.data$width-model$meta.data$left) * options$convert.units
+    # note that we don't need to account for left truncation, as
+    # it is taken care of when calculating average detection prob (by setting
+    # detection prob to 0 between 0 and left truncation distance)
+    width <- model$meta.data$width * options$convert.units
+
     Nhat.by.sample <- survey.region.dht(Nhat.by.sample, samples,width,point)
+    # sort Nhat.by.sample by Region.Label and Sample.Label
     Nhat.by.sample <- Nhat.by.sample[order(Nhat.by.sample$Region.Label,
-                                           Nhat.by.sample$Sample.Label),]
+                                           Nhat.by.sample$Sample.Label), ]
     if(point){
       s.area <- Nhat.by.sample$Effort.x*pi*width^2
     }else{
@@ -360,19 +365,27 @@ dht <- function(model,region.table,sample.table, obs.table=NULL, subset=NULL,
     }
   }
 
-  # Convert width value
-  width <- (model$meta.data$width-model$meta.data$left) * options$convert.units
 
   # If area is zero for all regions reset to the area of the covered region
   DensityOnly <- FALSE
   if(sum(region.table$Area)==0){
+    # Convert width value (needed here to set the area)
+    width <- (model$meta.data$width-model$meta.data$left)*options$convert.units
     DensityOnly <- TRUE
     # cat("Warning: Area for regions is zero. They have been set to area of covered region(strips), \nso N is for covered region.",
     #     "However, standard errors will not match \nprevious covered region SE because it includes spatial variation\n")
-    Effort.by.region <- by(sample.table$Effort, sample.table$Region.Label,sum)
-    region.table$Area <- ifelse(point,
-                                pi*as.vector(Effort.by.region)*width^2,
-                                2*as.vector(Effort.by.region)*width)
+    # this is a bit fiddly as ordering is not guaranteed
+    Effort.by.region <- aggregate(sample.table$Effort,
+                                  list(sample.table$Region.Label), sum)
+    names(Effort.by.region) <- c("Region.Label", "Effort")
+    Effort.by.region$Area <- if(point){
+      pi*Effort.by.region$Effort*width^2
+    }else{
+      2*Effort.by.region$Effort*width
+    }
+    region.table$Area <- NULL
+    region.table <- merge(region.table, Effort.by.region, by="Region.Label")
+    region.table$Effort <- NULL
   }
 
   # Create obs/samples structures

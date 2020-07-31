@@ -1,6 +1,6 @@
-984bda1b768894c087c5a0af82cbb593 *DESCRIPTION
-e7109f3e6568969270de3dca7e750200 *NAMESPACE
-89a7ac3795ee47fadc215c93bc0987bb *NEWS
+8b28404a49ae9a04ece038dff0fd41fc *DESCRIPTION
+0e84fb3af5665ffc222cc0a697040895 *NAMESPACE
+4f89e58cdb256277db6a1603e7b5feb0 *NEWS
 2a9ddd26deff125e09a91ae25160271c *R/AIC.R
 8ece8d181aa60557c755d9ddd9f9ca40 *R/DeltaMethod.R
 73ded4b8f4e09541d5c10535c42b43d7 *R/NCovered.R
@@ -11,7 +11,7 @@ fad4afe75b0bf19728bfba79848c3e20 *R/NCovered.rem.R
 bfb75d5cb7ae5ac712a44cc4c844996c *R/NCovered.rem.fi.R
 d713b971120fec0ebed8fb9a0d70413a *R/NCovered.trial.R
 4ced992c2dcc53280c37c1190effcee0 *R/NCovered.trial.fi.R
-3e9f5fb732c986c8be35b47ea5901435 *R/add_df_covar_line.R
+18790c05163b507721d92f6a571a978e *R/add_df_covar_line.R
 305e50111675fa44f0efefb9e3c86f3c *R/adj.check.order.R
 58d43cd60280d72c669f516262c0e33a *R/adjfct.cos.R
 30bc2779c2875fb3878138b62a5ed500 *R/adjfct.herm.R
@@ -40,8 +40,8 @@ b0f92ff219bcb44a1adb1eaf098255d5 *R/create.ddfobj.R
 419e131ebada9bab11650c4866fc60cf *R/create.model.frame.R
 25e11764b31599f4715aa2788721293c *R/create.varstructure.R
 ce44f2957571605e5f38cdf70a149d00 *R/ddf.R
-e3dca25e6ba28595d4efa39712ec6d56 *R/ddf.ds.R
-0a83c57a43d112cafed9630a4ab26227 *R/ddf.gof.R
+2b54c5658eaf8fbcde2547b31d153dd3 *R/ddf.ds.R
+4bd1fd773569b23e63682e6e68f317f5 *R/ddf.gof.R
 82f9e5170869d9c7cb6fc8995ab0551e *R/ddf.io.R
 c98e00d2cf7a8aa516c015b21105f7c7 *R/ddf.io.fi.R
 534a8981111535bde67f023245f9a678 *R/ddf.rem.R
@@ -53,9 +53,9 @@ b49e8f61714e04d341fabb3b909209e5 *R/detfct.R
 cbb92c99b84777ab6c2ff9db656dfc5f *R/detfct.fit.R
 18ea3ace61e1534ede5625a557b8856f *R/detfct.fit.mono.R
 78a26998c733d12da1feccc88bd3dbcf *R/detfct.fit.opt.R
-6b20db9395d5ffbde26ee028a7e51495 *R/dht.R
+d375bb1a6e03f110051048e6ebb2acf7 *R/dht.R
 0c6055166cbf4944cd3e8f4a69f49d65 *R/dht.deriv.R
-9820e31abfa75f90c2d51ae526206e76 *R/dht.se.R
+81985f92344a3d2f629e8178ffacb25f *R/dht.se.R
 3d097a989a95062fc5072ce343a40461 *R/ds.function.r
 3d15efb765fcda68e0c4fdcc5485839a *R/flnl.R
 c42f7b9b1cf3dfa2f201a5953356255e *R/flpt.lnl.r
@@ -98,7 +98,7 @@ a525c723199f4a6dff71b27b5fe39a83 *R/model.description.R
 9f5e3d3f1f32a8b1724016db0c1fd739 *R/nlminb_wrapper.R
 9e9721afc95264a7d20a340fb0a8dcf6 *R/optimx.setup.R
 330cc43414b5571d8e60016ba68bfd22 *R/p.det.R
-26f1ebf8ba6925bf7c76fd285f1b2cbe *R/p_dist_table.R
+7f6e162fd71441e3c13c07b97cd9e9f1 *R/p_dist_table.R
 2575710b93dfba5e3aa0014bcfb77750 *R/parse.optimx.R
 a968fe92975ea1910235e8b17eea4dc1 *R/pcramer.R
 410911265acff2999be388d03c9d17b4 *R/pdot.dsr.integrate.logistic.R
@@ -143,8 +143,8 @@ f16e9adf1741526782e49b047086a831 *R/rtriangle.r
 bbadf61ec03940aac283d5187711f2c9 *R/scalevalue.R
 678f10bd2c523313fd098e5112933f1e *R/setbounds.R
 45b2d149f1511f40291e41b5d91fe7a2 *R/setcov.R
-e4e4dee26033e08c5182d434aec0967a *R/sethazard.R
-8777d916654a533411df692734e61bb1 *R/setinitial.ds.R
+ba1070b73413def42d6c9c49e12884f3 *R/sethazard.R
+c4cf096a77b845cf627ccd1d8616d7b7 *R/setinitial.ds.R
 f75e9af4b059bae07c6d1b5582b4abec *R/sim.mix.R
 d5e37c0ceb68a374532ed5e5d013cf9c *R/solvecov.R
 25445f3fa6a651f670932e1d40e732c7 *R/summary.ds.R
@@ -156,9 +156,9 @@ b93ecba851287159c0ba1439db734923 *R/summary.rem.R
 89596daa396e19218549a724cf1f20eb *R/summary.trial.fi.R
 e1f12f279d8e25a0cb67e3f80907e75a *R/survey.region.dht.R
 eb5b475a9e911f014a39e6b69d36ff32 *R/test.breaks.R
-475e08ad94546a2402226febf751065c *R/varn.R
+a93f08bcbdc94e76795e2a3dfc3012c3 *R/varn.R
 a2878b40ab4790a21b80679112f570c3 *R/zzz.R
-4a958e03abea74eacfe44462bd61a0dd *README.md
+99b7ebb233e1d1d55eaf0d1f85d46098 *README.md
 b7e7bd922ee92603ae8a2e0ba3602850 *data/book.tee.data.rda
 ad406a795c10aa5a7714208a5dcefeee *data/lfbcvi.rda
 b2a6d18b4474e6098eea1e5999c9118a *data/lfgcwa.rda
@@ -205,7 +205,7 @@ e5613f2f3037016a0dcceb58cf7c62c0 *man/ddf.io.fi.Rd
 3a0d0063a4088d8b2da6241ca8a05aca *man/det.tables.Rd
 ef191a309b18f92bbac0af9bde458ef0 *man/detfct.fit.Rd
 c3f75269ecfb5c03652b7577474831fe *man/detfct.fit.opt.Rd
-4bba583f7e3031ea09c7cf8db188f880 *man/dht.Rd
+1be631b5bdd97067b20cad4485267e83 *man/dht.Rd
 94fa397361da892579182b7d9204d844 *man/dht.deriv.Rd
 95ef1777f683987fe06d04e562110c53 *man/dht.se.Rd
 fec5dccd4a6722b77c273b6911870498 *man/distpdf.Rd
@@ -280,7 +280,7 @@ fc55ae33a3a500cfa37ffdaa76c2b647 *man/rem.glm.Rd
 863b766c1ea6a3ad7ae7283977928985 *man/sample_ddf.Rd
 66ffe61183f2a6ad485ed725483f1472 *man/setbounds.Rd
 6dfeddb4e784d4d7e6de064e4e197776 *man/setcov.Rd
-1ec059ef637296ace55b21f673fede6d *man/setinitial.ds.Rd
+bfe21c37d95e33fe40760c5e2c0c7b2b *man/setinitial.ds.Rd
 bffb9cccf236b5e5e0e53839bd77265c *man/sim.mix.Rd
 b54c5eb2848df6306323145638adf011 *man/solvecov.Rd
 13ccc45c0505ea3e99be159662ac0ca2 *man/stake77.Rd
@@ -294,4 +294,4 @@ a36e8c78f381f9345f8569df753ea49a *man/summary.trial.Rd
 1e65d78fb13c22de33ed5d7412d52d2e *man/summary.trial.fi.Rd
 1bc400e94cebdbfb3af429475707805b *man/survey.region.dht.Rd
 f0059bfbfc42544c204fb4792b81812c *man/test.breaks.Rd
-4d7484e0f54356884c39c87a4ba5b525 *man/varn.Rd
+54c5c123ff3d3431bcd67fb3b7ae34fb *man/varn.Rd
