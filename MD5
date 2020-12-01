@@ -1,7 +1,7 @@
-8b28404a49ae9a04ece038dff0fd41fc *DESCRIPTION
-0e84fb3af5665ffc222cc0a697040895 *NAMESPACE
-4f89e58cdb256277db6a1603e7b5feb0 *NEWS
-2a9ddd26deff125e09a91ae25160271c *R/AIC.R
+0ba911219af585a3a7fa438b819c843f *DESCRIPTION
+08200b5befe3ea22ef036c8c995c652e *NAMESPACE
+4fccd68b08d2bdd804c89c497c600469 *NEWS
+2ced08d1a776493b97d46d1004a812c8 *R/AIC.R
 8ece8d181aa60557c755d9ddd9f9ca40 *R/DeltaMethod.R
 73ded4b8f4e09541d5c10535c42b43d7 *R/NCovered.R
 4c39060846aec1d88cb801481ce6ad5a *R/NCovered.ds.R
@@ -11,7 +11,7 @@ fad4afe75b0bf19728bfba79848c3e20 *R/NCovered.rem.R
 bfb75d5cb7ae5ac712a44cc4c844996c *R/NCovered.rem.fi.R
 d713b971120fec0ebed8fb9a0d70413a *R/NCovered.trial.R
 4ced992c2dcc53280c37c1190effcee0 *R/NCovered.trial.fi.R
-18790c05163b507721d92f6a571a978e *R/add_df_covar_line.R
+c24563b255edce6972e32584543b425f *R/add_df_covar_line.R
 305e50111675fa44f0efefb9e3c86f3c *R/adj.check.order.R
 58d43cd60280d72c669f516262c0e33a *R/adjfct.cos.R
 30bc2779c2875fb3878138b62a5ed500 *R/adjfct.herm.R
@@ -25,7 +25,7 @@ b587fb216cfc970da9a6d59cb436301f *R/calc.se.Np.R
 636a039fe59ee0b64fa7bd0bba82d067 *R/cdf.ds.R
 19a339405b85cfd1b1199898688e0fed *R/cds.R
 7f919d912c1d53550ffbaa072abc1873 *R/check.bounds.R
-a839884f047ac592eb379f009f38ab05 *R/check.mono.R
+e0d612fb18683ea1f25d6fa55f76096d *R/check.mono.R
 0f6488fd12c166623eebd412b7455c8e *R/coef.ds.R
 73959957ce493d51b100e6fcb20deaaa *R/coef.io.R
 96511f6377ded5fbd481c2a51ebcd6e8 *R/coef.io.fi.R
@@ -40,7 +40,7 @@ b0f92ff219bcb44a1adb1eaf098255d5 *R/create.ddfobj.R
 419e131ebada9bab11650c4866fc60cf *R/create.model.frame.R
 25e11764b31599f4715aa2788721293c *R/create.varstructure.R
 ce44f2957571605e5f38cdf70a149d00 *R/ddf.R
-2b54c5658eaf8fbcde2547b31d153dd3 *R/ddf.ds.R
+3fb0a0c840f20890b69c29c0735455f4 *R/ddf.ds.R
 4bd1fd773569b23e63682e6e68f317f5 *R/ddf.gof.R
 82f9e5170869d9c7cb6fc8995ab0551e *R/ddf.io.R
 c98e00d2cf7a8aa516c015b21105f7c7 *R/ddf.io.fi.R
@@ -85,7 +85,7 @@ a256ca72cb996e2cfb07276a9e682343 *R/is.logistic.constant.R
 d5640efe6a2f6a924d285056ad867944 *R/keyfct.hn.R
 7033c2679bd5f4bb32a63dac585db9a1 *R/keyfct.hz.R
 baa7e703f6cca55cf0d66d8cae83c9c4 *R/keyfct.th.R
-c5b2f26472745eb19ddff59b5017ed1b *R/logLik.R
+dc0c1e8d342751dd529202df43f2c20b *R/logLik.R
 31eef171e4db21f111118550ac55857d *R/logisticbyx.R
 12aac8a7221fdf6df1001844eab04951 *R/logisticbyz.R
 1de4506fcd0efadb3f28ef5f026a76c3 *R/logisticdetfct.R
@@ -114,7 +114,7 @@ a65b24aaa1392300c1bf0d1a95045c3f *R/plot.trial.R
 7b4338c4d576bbaa8d6393e6c4cedfad *R/plot_cond.R
 b0ce676f393d3f2c73aeadd5d9d40838 *R/plot_uncond.R
 63c3731439733f35c145565b8c74d20d *R/predict.ds.R
-cdb4036a7db48c9feee046318f16e70d *R/predict.io.R
+2df19c57a5fbaf7c44227eab31b1b749 *R/predict.io.R
 abda6e5a4f54fceae5d223fb33687d5e *R/predict.io.fi.R
 80fe20167298b6eed0ecb1093d57d44d *R/predict.rem.R
 94c84dde7242216bcad15a8f18b0f0dd *R/predict.rem.fi.R
@@ -133,7 +133,7 @@ a4d777ec1be466c12068674f3ff183a4 *R/print.summary.trial.R
 06856c18d6bb8e1b096c2b940cf4c53e *R/print.summary.trial.fi.R
 60972f53a34f07add64f0e611bf94f01 *R/prob.deriv.R
 50a248888373be5398593ef5cbfee6c4 *R/prob.se.R
-b90f7d04e9d7a1dd5ea00f027fb8bbe6 *R/process.data.R
+6bc9feb718c0d130bd21ac3881dd3223 *R/process.data.R
 838fe050cc55d94088ad9ba769fd27bb *R/qqplot.ddf.R
 e43d7c17843a092596b0c58d1932adfe *R/rem.glm.R
 340adaa4c6eadebed426a1ed36f677f3 *R/rescale_pars.R
@@ -146,7 +146,7 @@ bbadf61ec03940aac283d5187711f2c9 *R/scalevalue.R
 ba1070b73413def42d6c9c49e12884f3 *R/sethazard.R
 c4cf096a77b845cf627ccd1d8616d7b7 *R/setinitial.ds.R
 f75e9af4b059bae07c6d1b5582b4abec *R/sim.mix.R
-d5e37c0ceb68a374532ed5e5d013cf9c *R/solvecov.R
+cfdc39f36ba542b50a4fe0d70db8b80e *R/solvecov.R
 25445f3fa6a651f670932e1d40e732c7 *R/summary.ds.R
 93049a54449fa8510f216f466a916a4c *R/summary.io.R
 b7306b763eb9eabe8e58f51f0a66d243 *R/summary.io.fi.R
@@ -158,7 +158,7 @@ e1f12f279d8e25a0cb67e3f80907e75a *R/survey.region.dht.R
 eb5b475a9e911f014a39e6b69d36ff32 *R/test.breaks.R
 a93f08bcbdc94e76795e2a3dfc3012c3 *R/varn.R
 a2878b40ab4790a21b80679112f570c3 *R/zzz.R
-99b7ebb233e1d1d55eaf0d1f85d46098 *README.md
+e29cf0f26a33752dd3c73c571c39a862 *README.md
 b7e7bd922ee92603ae8a2e0ba3602850 *data/book.tee.data.rda
 ad406a795c10aa5a7714208a5dcefeee *data/lfbcvi.rda
 b2a6d18b4474e6098eea1e5999c9118a *data/lfgcwa.rda
@@ -170,10 +170,10 @@ a9b7a582c8163a87dc8b4d207249d408 *data/ptdata.removal.rda
 87398aea38edd7f82fdbb09fa1a186f8 *data/stake77.rda
 2bbb21fc1d3a153d4601f5676c9f106b *data/stake78.rda
 12e1a6062ae93b2bf981d560970d6c55 *inst/ONEWS
-138ebeee41833bf9e83ee27970c578a6 *man/AIC.ds.Rd
+4f639d256b35c795e15830d843e318ff *man/AIC.ddf.Rd
 9eca9fcb5bfac46b07923b63bb965179 *man/DeltaMethod.Rd
 b0cbc0f32b0d2b07f79909ad2dc5a751 *man/NCovered.Rd
-85493d1215dbe2b54dcc0cf009e9ee21 *man/add_df_covar_line.Rd
+0b708418daaf0f76faab68ef9f8342c5 *man/add_df_covar_line.Rd
 8181293438eb40b4ef6de4c0ec1dc5d8 *man/adj.check.order.Rd
 2add52dfa218d946d973c922fac2de72 *man/apex.gamma.Rd
 496f89ccb39a89e22a25793d13499e62 *man/assign.default.values.Rd
@@ -185,7 +185,7 @@ ef1a30b335387804545904efc382aae4 *man/book.tee.data.Rd
 e589565f17d2faea0a2e67487a6d8fe8 *man/cdf.ds.Rd
 ccbba34d0ddf3c4d161a875ad021f5e4 *man/cds.Rd
 094ad5b043a3c72821b29fbf5eaacfc0 *man/check.bounds.Rd
-1fb16d5bb300e3b264899a9b378b4b65 *man/check.mono.Rd
+a8b3f71a9389229ef6c3d6d920facb14 *man/check.mono.Rd
 8b0545cf964ec55ff86c11ec8f1844f4 *man/coef.ds.Rd
 5f930783213a63a822ee8e4c21f1f833 *man/compute.Nht.Rd
 7b0f8e150b0d9e3c8a0917a6fa1984fb *man/covered.region.dht.Rd
@@ -194,7 +194,7 @@ ccbba34d0ddf3c4d161a875ad021f5e4 *man/cds.Rd
 c41b54b9149738c7124f03219977e949 *man/create.model.frame.Rd
 5a65b2a54588d462fb02be9ee6c31152 *man/create.varstructure.Rd
 75ae71cb353b3f0cc73ff2a64aa3f900 *man/ddf.Rd
-e30e726a3c7dac88b2698c0aeb4d0d5a *man/ddf.ds.Rd
+81bb4d05c82e4a5050335785ba2e10c0 *man/ddf.ds.Rd
 03d6ded5cdd1d33de136019580186d19 *man/ddf.gof.Rd
 fc490b1259a793c74ec581e18c639c4a *man/ddf.io.Rd
 e5613f2f3037016a0dcceb58cf7c62c0 *man/ddf.io.fi.Rd
@@ -227,7 +227,7 @@ ad902dc6d6eaf59f4584fa7cff3638c5 *man/is.logistic.constant.Rd
 a6b831bc95b4ce544a375b2b8ae75015 *man/keyfct.th2.Rd
 f09eb5e0e2f786cab9a403a02ab1a2ed *man/lfbcvi.Rd
 089dfa777ac1141790c47932b5d5474d *man/lfgcwa.Rd
-b4ba84da991b97973bcc85b29486408d *man/logLik.ds.Rd
+dcf590c9ee46454c2a082b5dd965fea8 *man/logLik.ddf.Rd
 676a86f0d8ab9dfaa364ef74be540f32 *man/logisticbyx.Rd
 d40a28868782531d40033c0554fac75b *man/logisticbyz.Rd
 c9fe31cfb3913031e452032b63b07ab3 *man/logisticdetfct.Rd
@@ -282,7 +282,7 @@ fc55ae33a3a500cfa37ffdaa76c2b647 *man/rem.glm.Rd
 6dfeddb4e784d4d7e6de064e4e197776 *man/setcov.Rd
 bfe21c37d95e33fe40760c5e2c0c7b2b *man/setinitial.ds.Rd
 bffb9cccf236b5e5e0e53839bd77265c *man/sim.mix.Rd
-b54c5eb2848df6306323145638adf011 *man/solvecov.Rd
+ef16e9603ab87f824efda73184c569ad *man/solvecov.Rd
 13ccc45c0505ea3e99be159662ac0ca2 *man/stake77.Rd
 ef26fc7779af2bc93b43cd70ffdf5680 *man/stake78.Rd
 99c81f7b764242a80a47e02d5837908a *man/summary.ds.Rd
