@@ -1,6 +1,7 @@
 #' Prints density and abundance estimates
 #'
-#' Outputs summary statistics, abundance and density by region (if any) and optionally a correlation matrix if more than one region.
+#' Outputs summary statistics, abundance and density by region (if any) and
+#' optionally a correlation matrix if more than one region.
 #'
 #' @method print dht
 #' @param x dht object that results from call to dht for a specific ddf object
@@ -27,7 +28,9 @@ print.dht <- function(x, cor=FALSE, bysample=FALSE, vcmatrices=FALSE, ...){
     if(vcmatrices){
       cat("\nAbundance variance-covariance matrix component from estimating detection function\n" )
       print(x$vc$detection$variance)
-      cat("\nAbundance variance-covariance matrix component from sample selection\n" )
+      cat("\n")
+      cat("Abundance variance-covariance matrix component from sample selection")
+      cat("\n")
       print(x$vc$er)
     }
     if(cor){
@@ -40,6 +43,13 @@ print.dht <- function(x, cor=FALSE, bysample=FALSE, vcmatrices=FALSE, ...){
     }
   }
 
+  # general information
+  cat("Abundance and density estimates from distance sampling\n")
+ cat("Variance       :", paste0(attr(x, "ER_var")[1], ","),
+      ifelse(attr(x, "ER_var")[3], "binomial",
+             ifelse(attr(x, "ER_var")[2], "N/L", "n/L")), "\n")
+
+  # now print
   if(is.null(x$clusters)){
     print.tables(x$individuals, cor, bysample, vcmatrices)
   }else{

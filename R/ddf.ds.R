@@ -97,7 +97,6 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
                                     int.range=NA, mono=FALSE, mono.strict=FALSE,
                                     point=FALSE)
 
-
   # Set up control values
   control <- assign.default.values(control, showit=0,
                                    estimate=TRUE, refit=TRUE, nrefits=25,
@@ -115,9 +114,9 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
   # Process data
   # First remove data with missing distances
   if(!is.null(data$distance)){
-    data <- data[!is.na(data$distance),]
+    data <- data[!is.na(data$distance), ]
   }else{
-    data <- data[!is.na(data$distbegin)&!is.na(data$distend),]
+    data <- data[!is.na(data$distbegin)&!is.na(data$distend), ]
   }
   if(is.null(data$object)){
     stop("\nobject field is missing in the data\n")
@@ -155,6 +154,21 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
                 as.numeric(levels(as.factor(xmat$distend))))
   }else{
     breaks <- NULL
+  }
+
+  # check we don't have more parameters than data
+  npars <- switch(model[[2]]$key,
+                  "unif"  = 0,
+                  "hn"    = 1,
+                  2) + length(model[[2]]$adj.order)
+  if(meta.data$binned){
+    if((length(breaks)-1) < npars){
+      stop("More parameters to estimate than distance bins")
+    }
+  }else{
+    if(length(unique(data$distance)) < npars){
+      stop("More parameters to estimate than unique distances")
+    }
   }
 
   # Setup detection model
@@ -196,9 +210,10 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
                         optimx.method = control$optimx.method,
                         parscale      = control$parscale)
 
-  # Actually do the optimisation if not just a uniform key!
   if(is.null(initialvalues)) misc.options$nofit <- TRUE
 
+
+  # Actually do the optimisation
   lt <- detfct.fit(ddfobj, optim.options, bounds, misc.options)
 
   # check that hazard models have a reasonable scale parameter

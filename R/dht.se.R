@@ -1,28 +1,69 @@
 #' Variance and confidence intervals for density and abundance estimates
 #'
-#' Computes standard error, cv, and log-normal confidence intervals for abundance and density within each region (if any) and for the total of all the regions. It also produces the correlation matrix for regional and total estimates.
+#' Computes standard error, cv, and log-normal confidence intervals for
+#' abundance and density within each region (if any) and for the total of all
+#' the regions. It also produces the correlation matrix for regional and total
+#' estimates.
 #'
 #' The variance has two components:
 #' \itemize{
-#'   \item variation due to uncertainty from estimation of the detection function parameters;
+#'   \item variation due to uncertainty from estimation of the detection
+#'   function parameters;
 #'   \item variation in abundance due to random sample selection;
 #' }
-#' The first component (model parameter uncertainty) is computed using a delta method estimate of variance (Huggins 1989, 1991, Borchers et al. 1998) in which the first derivatives of the abundance estimator with respect to the parameters in the detection function are computed numerically (see \code{\link{DeltaMethod}}).
+#' The first component (model parameter uncertainty) is computed using a delta
+#' method estimate of variance (Huggins 1989, 1991, Borchers et al. 1998) in
+#' which the first derivatives of the abundance estimator with respect to the
+#' parameters in the detection function are computed numerically (see
+#' \code{\link{DeltaMethod}}).
 #'
-#' The second component (encounter rate variance) can be computed in one of several ways depending on the form taken for the encounter rate and the estimator used. To begin with there three possible values for \code{varflag} to calculate encounter rate:
+#' The second component (encounter rate variance) can be computed in one of
+#' several ways depending on the form taken for the encounter rate and the
+#' estimator used. To begin with there three possible values for \code{varflag}
+#' to calculate encounter rate:
 #' \itemize{
-#'  \item \code{0} uses a binomial variance for the number of observations (equation 13 of Borchers et al. 1998). This estimator is only useful if the sampled region is the survey region and the objects are not clustered; this situation will not occur very often;
-#'  \item \code{1} uses the encounter rate \eqn{n/L} (objects observed per unit transect) from Buckland et al. (2001) pg 78-79 (equation 3.78) for line transects (see also Fewster et al, 2009 estimator R2). This variance estimator is not appropriate if \code{size} or a derivative of \code{size} is used in the detection function;
-#'  \item \code{2} is the default and uses the encounter rate estimator \eqn{\hat{N}/L} (estimated abundance per unit transect) suggested by Innes et al (2002) and Marques & Buckland (2004).
+#'  \item \code{0} uses a binomial variance for the number of observations
+#'  (equation 13 of Borchers et al. 1998). This estimator is only useful if the
+#'  sampled region is the survey region and the objects are not clustered; this
+#'  situation will not occur very often;
+#'  \item \code{1} uses the encounter rate \eqn{n/L} (objects observed per unit
+#'  transect) from Buckland et al. (2001) pg 78-79 (equation 3.78) for line
+#'  transects (see also Fewster et al, 2009 estimator R2). This variance
+#'  estimator is not appropriate if \code{size} or a derivative of \code{size}
+#'  is used in the detection function;
+#'  \item \code{2} is the default and uses the encounter rate estimator
+#'  \eqn{\hat{N}/L} (estimated abundance per unit transect) suggested by Innes
+#'  et al (2002) and Marques & Buckland (2004).
 #' }
 #'
-#' In general if any covariates are used in the models, the default \code{varflag=2} is preferable as the estimated abundance will take into account variability due to covariate effects. If the population is clustered the mean group size and standard error is also reported.
+#' In general if any covariates are used in the models, the default
+#' \code{varflag=2} is preferable as the estimated abundance will take into
+#' account variability due to covariate effects. If the population is clustered
+#' the mean group size and standard error is also reported.
 #'
-#' For options \code{1} and \code{2}, it is then possible to choose one of the estimator forms given in Fewster et al (2009). For line transects: \code{"R2"}, \code{"R3"}, \code{"R4"}, \code{"S1"}, \code{"S2"}, \code{"O1"}, \code{"O2"} or \code{"O3"} can be used by specifying the \code{ervar=} option (default \code{"R2"}). For point transects only the \code{"P3"} estimator may be used. See \code{\link{varn}} and Fewster et al (2009) for further details on these estimators.
+#' For options \code{1} and \code{2}, it is then possible to choose one of the
+#' estimator forms given in Fewster et al (2009). For line transects:
+#' \code{"R2"}, \code{"R3"}, \code{"R4"}, \code{"S1"}, \code{"S2"},
+#' \code{"O1"}, \code{"O2"} or \code{"O3"} can be used by specifying the
+#' \code{ervar=} option (default \code{"R2"}). For point transects only the
+#' \code{"P3"} estimator may be used. See \code{\link{varn}} and Fewster et al
+#' (2009) for further details on these estimators.
 #'
-#' Exceptions to the above occur if there is only one sample in a stratum. In that case it uses Poisson assumption (\eqn{Var(x)=x}) and it assumes a known variance so \eqn{z=1.96} is used for critical value. In all other cases the degrees of freedom for the \eqn{t}-distribution assumed for the log(abundance) or log(density) is based on the Satterthwaite approximation (Buckland et al. 2001 pg 90) for the degrees of freedom (df). The df are weighted by the squared cv in combining the two sources of variation because of the assumed log-normal distribution because the components are multiplicative. For combining df for the sampling variance across regions they are weighted by the variance because it is a sum across regions.
+#' Exceptions to the above occur if there is only one sample in a stratum. In
+#' that case it uses Poisson assumption (\eqn{Var(x)=x}) and it assumes a known
+#' variance so \eqn{z=1.96} is used for critical value. In all other cases the
+#' degrees of freedom for the \eqn{t}-distribution assumed for the
+#' log(abundance) or log(density) is based on the Satterthwaite approximation
+#' (Buckland et al. 2001 pg 90) for the degrees of freedom (df). The df are
+#' weighted by the squared cv in combining the two sources of variation because
+#' of the assumed log-normal distribution because the components are
+#' multiplicative. For combining df for the sampling variance across regions
+#' they are weighted by the variance because it is a sum across regions.
 #'
-#' A non-zero correlation between regional estimates can occur from using a common detection function across regions. This is reflected in the correlation matrix of the regional and total estimates which is given in the value list. It is only needed if subtotals of regional estimates are needed.
+#' A non-zero correlation between regional estimates can occur from using a
+#' common detection function across regions. This is reflected in the
+#' correlation matrix of the regional and total estimates which is given in the
+#' value list. It is only needed if subtotals of regional estimates are needed.
 #'
 #' @param model ddf model object
 #' @param region.table table of region values
@@ -33,8 +74,12 @@
 #' @param estimate.table table of estimate values
 #' @param Nhat.by.sample estimated abundances by sample
 #' @export
-#' @return List with 2 elements: \item{estimate.table}{completed table with se, cv and confidence limits} \item{vc }{correlation matrix of estimates}
-#' @note This function is called by \code{dht} and it is not expected that the user will call this function directly but it is documented here for completeness and for anyone expanding the code or using this function in their own code.
+#' @return List with 2 elements: \item{estimate.table}{completed table with se,
+#' cv and confidence limits} \item{vc }{correlation matrix of estimates}
+#' @note This function is called by \code{dht} and it is not expected that the
+#' user will call this function directly but it is documented here for
+#' completeness and for anyone expanding the code or using this function in
+#' their own code.
 #' @author Jeff Laake
 #' @seealso \code{\link{dht}}, \code{\link{print.dht}}
 #' @references see \code{\link{dht}}
@@ -45,7 +90,7 @@ dht.se <- function(model, region.table, samples, obs, options, numRegions,
   #  Functions Used:  DeltaMethod, dht.deriv (in DeltaMethod), varn
 
   # Define function: compute.df
-  compute.df<- function(k,type){
+  compute.df <- function(k, type){
     if(type=="O1" | type=="O2"| type=="O3"){
       H.O <- k - 1
       k.h.O <- rep(2, H.O)
@@ -122,7 +167,7 @@ dht.se <- function(model, region.table, samples, obs, options, numRegions,
                               by.y = "Label", all.x = TRUE)
       Nhat.by.sample$n[is.na(Nhat.by.sample$n)] <- 0
     }else{
-      Nhat.by.sample <- cbind(Nhat.by.sample, n = rep(0,nrow(Nhat.by.sample)))
+      Nhat.by.sample <- cbind(Nhat.by.sample, n = rep(0, nrow(Nhat.by.sample)))
     }
 
     # Compute number of lines per region for df calculation
@@ -139,16 +184,18 @@ dht.se <- function(model, region.table, samples, obs, options, numRegions,
     # of mean for group size.
     if(!options$group){
       if(length(obs$size) > 0){
-        vars <- by(obs$size, obs$Region.Label, var)/
-                  by(obs$size, obs$Region.Label, length)
+        ngroup <- by(obs$size, obs$Region.Label, length)
+        vars <- by(obs$size, obs$Region.Label, var)/ngroup
         sbar <- by(obs$size, obs$Region.Label, mean)
         sobs <- data.frame(Region.Label = names(sbar),
                            vars         = as.vector(vars),
-                           sbar         = as.vector(sbar))
+                           sbar         = as.vector(sbar),
+                           ngroup       = as.vector(ngroup))
       }else{
         sobs <- data.frame(Region.Label = levels(obs$Region.Label),
                            vars = rep(NA, length(levels(obs$Region.Label))),
-                           sbar = rep(NA, length(levels(obs$Region.Label))))
+                           sbar = rep(NA, length(levels(obs$Region.Label))),
+                           ngroup = NA)
       }
       Nhat.by.sample <- merge(Nhat.by.sample, sobs, by.x = "Region.Label",
                               by.y = "Region.Label", all.x = TRUE)
@@ -156,18 +203,19 @@ dht.se <- function(model, region.table, samples, obs, options, numRegions,
       Nhat.by.sample$vars[is.na(Nhat.by.sample$vars)] <- 0
     }else{
       # If group abundance is being estimated, set mean=1, var=0
-      Nhat.by.sample$sbar <- rep(1, dim(Nhat.by.sample)[1])
-      Nhat.by.sample$vars <- rep(0, dim(Nhat.by.sample)[1])
+      Nhat.by.sample$sbar <- rep(1, nrow(Nhat.by.sample))
+      Nhat.by.sample$vars <- rep(0, nrow(Nhat.by.sample))
     }
 
     # sort Nhat.by.sample by Region.Label and Sample.Label
     Nhat.by.sample <- Nhat.by.sample[order(Nhat.by.sample$Region.Label,
-                                           Nhat.by.sample$Sample.Label),]
+                                           Nhat.by.sample$Sample.Label), ]
 
     # Loop over each region and compute each variance;
     # jll 11/11/04 - changes made in following code using
     # Effort.x (effort per line) rather than previous errant code
     # that used Effort.y (effort per region)
+    if(!options$group) vg <- rep(0, numRegions)
     for(i in 1:numRegions){
       stratum.data <- Nhat.by.sample[as.character(Nhat.by.sample$Region.Label)==
                                      as.character(region.table$Region[i]), ]
@@ -180,16 +228,23 @@ dht.se <- function(model, region.table, samples, obs, options, numRegions,
 
       if(length(stratum.data$Effort.y) == 1){
         if (options$varflag == 1){
-          vc2[i] <- Ni^2 * (1/stratum.data$n + vars/sbar^2)
+          vc2[i] <- Ni^2 * 1/stratum.data$n
         }else{
-          vc2[i] <- Ni^2 * (1/Ni + vars/sbar^2)
+          vc2[i] <- Ni^2 * 1/Ni
         }
       }else if (options$varflag == 1){
+        # Buckland et al 2001 using n/L
         vc2[i] <- (Ni * Li)^2 * varn(stratum.data$Effort.x,
                                      stratum.data$n, type=options$ervar)/
-                                sum(stratum.data$n)^2 + Ni^2 * vars/sbar^2
+                                sum(stratum.data$n)^2
+
+        if(!options$group){
+          # if we have groups, add in the variance components (when estimating
+          # density/abundance of individuals)
+          vg[i] <- Ni^2 * vars/sbar^2
+        }
       }else{
-        # varflag ==2
+        # Innes et al estimator using N/L
         vc2[i] <- varn(stratum.data$Effort.x/(scale[i] * Li),
                        stratum.data$Nhat/scale[i], type=options$ervar)
       }
@@ -207,6 +262,9 @@ dht.se <- function(model, region.table, samples, obs, options, numRegions,
     vc2 <- diag(c(vc2, sum(vc2)))
     vc2[1:numRegions, (numRegions + 1)] <- v2
     vc2[(numRegions + 1), 1:numRegions] <- v2
+    if(!options$group & options$varflag==1){
+      vg <- diag(c(vg, sum(vg)))
+    }
   }else if (length(vc2) > 1){
     vc2 <- diag(vc2)
   }else{
@@ -214,6 +272,11 @@ dht.se <- function(model, region.table, samples, obs, options, numRegions,
   }
 
   vc <- vc1 + vc2
+  # for the Buckland estimator, when we have groups add in the groups
+  # variance component
+  if(!options$group & options$varflag==1){
+    vc <- vc + vg
+  }
 
   # deal with missing values and 0 estimates.
   estimate.table$se <- sqrt(diag(vc))
@@ -242,10 +305,20 @@ dht.se <- function(model, region.table, samples, obs, options, numRegions,
     if(is.na(vc1) || all(vc1==0)){
       estimate.table$df <- df
     }else{
-      estimate.table$df <- estimate.table$cv^4/((diag(vc1)/
-                            estimate.table$Estimate^2)^2/(length(model$fitted) -
-                            length(model$par)) +
-                            (diag(vc2)/estimate.table$Estimate^2)^2/df)
+      # loop over the strata, calculating the components of the df calc
+      # see Buckland et al. (2001) Eqn 3.75
+      for(i in 1:numRegions){
+        cvs <- c(sqrt(diag(vc1)[i])/estimate.table$Estimate[i],
+                 sqrt(diag(vc2)[i])/estimate.table$Estimate[i])
+        df_cvs <- c(length(model$fitted)-length(model$par), df[i])
+
+        # add in group size component if we need to
+        if(!options$group & options$varflag==1){
+          cvs <- c(cvs, sqrt(sobs$vars[i])/sobs$sbar[i])
+          df_cvs <- c(df_cvs, sobs$ngroup[i]-1)
+        }
+        estimate.table$df[i] <- estimate.table$cv[i]^4 / sum((cvs^4)/df_cvs)
+      }
     }
 
     # compute proper satterthwaite
@@ -258,12 +331,20 @@ dht.se <- function(model, region.table, samples, obs, options, numRegions,
       if(all(vc1==0)){
           estimate.table$df[numRegions+1] <- df.total
       }else{
+        cvs <- c(sqrt(diag(vc1)[numRegions+1])/
+                   estimate.table$Estimate[numRegions+1],
+                 sqrt(diag(vc2)[numRegions+1])/
+                   estimate.table$Estimate[numRegions+1])
+        df_cvs <- c(length(model$fitted)-length(model$par), df.total)
+
+        # add in group size component if we need to
+        if(!options$group & options$varflag==1){
+          cvs <- c(cvs, sqrt(vg[numRegions+1, numRegions+1])/
+                             estimate.table$Estimate[numRegions+1])
+          df_cvs <- c(df_cvs, length(model$fitted)-1)
+        }
         estimate.table$df[numRegions+1] <- estimate.table$cv[numRegions+1]^4 /
-                    ((diag(vc1)[numRegions+1]/
-                    estimate.table$Estimate[numRegions+1]^2)^2/
-                    (length(model$fitted)-length(model$par))
-                    + (diag(vc2)[numRegions+1]/
-                        estimate.table$Estimate[numRegions+1]^2)^2/df.total)
+                                            sum((cvs^4)/df_cvs)
       }
     }
 
