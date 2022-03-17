@@ -49,9 +49,6 @@ detfct.fit <- function(ddfobj, optim.options, bounds, misc.options){
   # whether to silence errors from detfct.fit.optim
   silent <- misc.options$silent
 
-  # How small is small?
-  epsilon <- sqrt(.Machine$double.eps)
-
   # keep a history of how the optimisation is doing
   # stores: convergence status (0=GOOD), lnl, pars
   misc.options$optim.history <- rep(NA, length(getpar(ddfobj))+2)
@@ -83,7 +80,8 @@ detfct.fit <- function(ddfobj, optim.options, bounds, misc.options){
       if(check.bounds(lt, bounds$lower, bounds$upper, ddfobj,
                       showit, bounds$setlower, bounds$setupper)){
         bounds <- setbounds(rep(NA, length(lt$par)), rep(NA, length(lt$par)),
-                            lt$par, ddfobj)
+                            lt$par, ddfobj, misc.options$width,
+                            misc.options$left)
       }
     }
 
@@ -145,7 +143,7 @@ detfct.fit <- function(ddfobj, optim.options, bounds, misc.options){
           if(showit >= 2){
             cat("DEBUG: iteration", paste(iter, metaiter, sep="."),
                 ":\n       Converge   =", lt$converge,
-                "\n       lnl        =", lt$value,
+                "\n       nll        =", lt$value,
                 "\n       parameters =", paste(round(lt$par, 7), collapse=", "),
                 "\n")
           }
@@ -196,7 +194,7 @@ detfct.fit <- function(ddfobj, optim.options, bounds, misc.options){
     cat("\nDEBUG: Convergence!",
         "\n       Iteration ", paste(iter, metaiter, sep="."),
         "\n       Converge   =", lt$converge,
-        "\n       lnl        =", lt$value,
+        "\n       nll        =", lt$value,
         "\n       parameters =", paste(round(lt$par, 7), collapse=", "), "\n")
   }
 

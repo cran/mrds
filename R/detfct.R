@@ -108,7 +108,6 @@ distpdf <- function(distance, ddfobj, select=NULL, index=NULL, width=NULL,
              width=width, standardize=standardize, stdint=stdint))
 }
 
-
 fx <- function(distance, ddfobj, select=NULL, index=NULL, width=NULL,
                standardize=TRUE, stdint=FALSE, left=0){
   return(detfct(distance, ddfobj, select, index, width, standardize, stdint)/
@@ -120,7 +119,6 @@ fr <- function(distance, ddfobj, select=NULL, index=NULL, width=NULL,
   return(detfct(distance, ddfobj, select, index, width, standardize, stdint)*
          2*distance/width^2)
 }
-
 
 detfct <- function(distance, ddfobj, select=NULL, index=NULL, width=NULL,
                    standardize=TRUE, stdint=FALSE, left=0){
@@ -138,6 +136,8 @@ detfct <- function(distance, ddfobj, select=NULL, index=NULL, width=NULL,
       scale.dm <- ddfobj$scale$dm[index, , drop=FALSE]
       shape.dm <- ddfobj$shape$dm[index, , drop=FALSE]
     }
+    ddfobj$scale$dm <- scale.dm
+    ddfobj$shape$dm <- shape.dm
   }else{
     # Use those with select=TRUE
     if(is.null(index)){
@@ -148,6 +148,8 @@ detfct <- function(distance, ddfobj, select=NULL, index=NULL, width=NULL,
       scale.dm <- ddfobj$scale$dm[select, , drop=FALSE][index, , drop=FALSE]
       shape.dm <- ddfobj$shape$dm[select, , drop=FALSE][index, , drop=FALSE]
     }
+    ddfobj$scale$dm <- scale.dm
+    ddfobj$shape$dm <- shape.dm
   }
 
   # Key function
@@ -173,8 +175,8 @@ detfct <- function(distance, ddfobj, select=NULL, index=NULL, width=NULL,
 
   # for gamma shape parameter must be >1, see Becker and Quang (2009) p 213
   if(key=="gamma"){
-    key.shape <- key.shape+1
-    key.shape[key.shape==1] <- key.shape[key.shape==1]+0.000001
+    key.shape <- key.shape + 1
+    key.shape[key.shape==1] <- key.shape[key.shape==1] + 0.000001
   }
 
   # 19-Jan-06 jll; added proper standardize code to get std integral.
@@ -187,7 +189,8 @@ detfct <- function(distance, ddfobj, select=NULL, index=NULL, width=NULL,
               unif  = rep(1/(width-left), length(distance)),
               gamma = keyfct.gamma(distance, key.scale, key.shape),
               th1   = keyfct.th1(distance, key.scale, key.shape),
-              th2   = keyfct.th2(distance, key.scale, key.shape))
+              th2   = keyfct.th2(distance, key.scale, key.shape),
+              tpn   = keyfct.tpn(distance, ddfobj))
 
   # Adjustment functions
   # If we are using adjustment terms.
@@ -222,7 +225,7 @@ detfct <- function(distance, ddfobj, select=NULL, index=NULL, width=NULL,
     # this cancels in the likelihood, so we don't need it in optimisation
     if(standardize){
       if(key == "gamma"){
-        # for the gammma, use apex.gamma to find the apex first, then eval
+        # for the gamma, use apex.gamma to find the apex first, then eval
         # need to update the scale to be +1 in this apex call
         ddfobj$shape$parameters <- log(exp(ddfobj$shape$parameters)+1)
         zeros <- as.vector(apex.gamma(ddfobj))[1]

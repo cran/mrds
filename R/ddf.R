@@ -137,7 +137,7 @@
 #' the transect width (and the left truncation point if there is a blindspot
 #' below the aircraft) can potentially change for each observation. The
 #' argument \code{int.range} can also be entered as a matrix with 2 columns
-#' (left and width) and a row for each observation. 
+#' (left and width) and a row for each observation.
 #'
 #' The argument \code{control} is a list that enables various analysis options
 #' to be set.  It is not necessary to set any of these for most analyses.  They
@@ -279,17 +279,15 @@ ddf <- function(dsmodel=call(), mrmodel=call(),data, method="ds",
   # Functions Used: ddf.ds, ddf.io, ddf.trial, ddf.io.fi, ddf.trial.fi,
   #                 ddf.rem, ddf.rem.fi
 
-  # Save current user options and then set desgn contrasts to treatment
-  # style; load stats
-
+  # Save current user options and then set design contrasts to treatment
+  # style
   save.options <- options()
-  options(contrasts=c("contr.treatment","contr.poly"))
-#  library(stats)
-  
+  options(contrasts=c("contr.treatment", "contr.poly"))
+
   # order data to meet expectations of the code
   if(!is.null(data$observer) & !is.null(data$object))
-	  data <- data[order(data$object,data$observer),]
-  
+    data <- data[order(data$object,data$observer),]
+
   # Check to make sure method is valid and correct model components
   # have been specified
   method <- match.arg(method,c("ds","io","io.fi","trial","trial.fi",

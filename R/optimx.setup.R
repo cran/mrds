@@ -1,4 +1,5 @@
 #' @importFrom numDeriv grad
+#' @importFrom methods is
 optimx.setup <- function(par, fn, gr=NULL, hess=NULL, lower=-Inf, upper=Inf, 
             method=c("Nelder-Mead","BFGS"), itnmax=NULL, hessian=FALSE,
             control=list(),
@@ -188,7 +189,7 @@ optimx.setup <- function(par, fn, gr=NULL, hess=NULL, lower=-Inf, upper=Inf,
   # 2011-1-17 JN: to set L-BFGS-B
   method <- try(unique(match.arg(method, allmeth, several.ok=TRUE) ),
                 silent=TRUE)
-  if (class(method)=="try-error") {
+  if (is(method, "try-error")) {
     warning("optimx: No match to available methods")
     method<-NULL
     nmeth<-0

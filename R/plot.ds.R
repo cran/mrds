@@ -76,13 +76,14 @@ plot.ds <- function(x, which=2, breaks=NULL, nc=NULL,
                     pl.den=NULL, pl.ang=NULL, main=NULL, pages=0,
                     pdf=FALSE, ylim=NULL, xlab="Distance", ylab=NULL, ...){
 
-  model<-x
+  model <- x
   lower <- 0
   vname <- "distance"
   dat <- model$data
 
-  # ignore pdf=TRUE with line transect data
-  if(pdf & !model$meta.data$point){
+  # ignore pdf=TRUE with line transect data or with gamma df
+  if((pdf & !model$meta.data$point) |
+     (pdf & model$ds$aux$ddfobj$type=="gamma")){
     warning("Ignoring pdf=TRUE for line transect data")
     pdf <- FALSE
   }
@@ -268,11 +269,11 @@ plot.ds <- function(x, which=2, breaks=NULL, nc=NULL,
     hist_area <- sum(hist.obj$density*diff(breaks))
     # Detection function/pdf values for points to be plotted
     if(point & pdf){
-      point_vals <- distpdf(xmat$distance, ddfobj, width=width, point=TRUE,
+      point_vals <- distpdf(xmat$distance, ddfobj, width=width, point=point,
                                 standardize=TRUE)/
                     integratepdf(ddfobj, select=selected, width=width,
                                  int.range=int.range, standardize=TRUE,
-                                 point=TRUE)
+                                 point=point)
     }else{
       point_vals <- detfct(xmat$distance, ddfobj, select=selected, width=width)
     }
@@ -312,17 +313,17 @@ plot.ds <- function(x, which=2, breaks=NULL, nc=NULL,
           detfct.values[x<int.range[, 1] | x>int.range[, 2]] <- 0
         }
 
-        if(point & pdf){
+        if((point & pdf) | ddfobj$type=="gamma"){
           ## calculate the pdf of distances
           # want r g(r) / int r g(r) dr
 
           # this is 2 r g(r)/w^2
-          r_gr <- distpdf(newdat$distance, ddfobj, width=width, point=TRUE,
+          r_gr <- distpdf(newdat$distance, ddfobj, width=width, point=point,
                           standardize=TRUE)
           # this is the value of int [2 r g(r) /w^2] dr
           int_r_gr <- integratepdf(ddfobj, select=selected, width=width,
                                    int.range=int.range, standardize=TRUE,
-                                   point=TRUE)
+                                   point=point)
           # so the pdf values are:
           pdf_vals <- r_gr/int_r_gr
 
@@ -344,28 +345,28 @@ plot.ds <- function(x, which=2, breaks=NULL, nc=NULL,
 
       # goofy workaround -- gamma is 0 at x=0, so add a little to the grid
       #  value so we don't have a weird drop
-      if(ddfobj$type=="gamma"){
+      if(ddfobj$type=="gamma" & left==0){
         xgrid[1] <- xgrid[1]+1e-6
       }
 
-      if(point & pdf){
+      if((point & pdf) | ddfobj$type=="gamma"){
         ## calculate the pdf of distances
         # want r g(r) / int r g(r) dr
 
         # this is 2 r g(r)/w^2
-        r_gr <- distpdf(xgrid, ddfobj, width=width, point=TRUE,
-                        standardize=TRUE)
+        r_gr <- distpdf(xgrid, ddfobj, width=width, point=point,
+                        standardize=TRUE, left=left)
         # this is the value of int [2 r g(r) /w^2] dr
         int_r_gr <- integratepdf(ddfobj, select=TRUE, width=width,
                                  int.range=int.range, standardize=TRUE,
-                                 point=TRUE)[1]
+                                 point=point, left=left)[1]
         # so the pdf values are:
         pdf_vals <- r_gr/int_r_gr
 
         # now rescale such that area under pdf == area under histogram
         linevalues <- pdf_vals * hist_area
       }else{
-        linevalues <- detfct(xgrid, ddfobj, width=width)
+        linevalues <- detfct(xgrid, ddfobj, width=width, left=left)
       }
     }
 
@@ -378,7 +379,6 @@ plot.ds <- function(x, which=2, breaks=NULL, nc=NULL,
     ldots <- dots
     ldots$x <- xgrid
     ldots$y <- linevalues
-    #lines(xgrid, linevalues, ...)
     do.call(lines, ldots)
 
     if(showpoints){
