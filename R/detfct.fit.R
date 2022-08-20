@@ -30,7 +30,7 @@
 #'   breaks: breaks in distance for defined fixed bins for analysis \item
 #'   maxiter: maximum iterations used \item refit: if TRUE, detection function
 #'   will be fitted more than once if parameters are at a boundary or when
-#'   convergence is not achieved \item nrefits: number of refittings \item
+#'   convergence is not achieved \item nrefits: number of refittings
 #'   \item mono: if TRUE monotonicity will be enforced \item
 #'   mono.strict: if TRUE, then strict monotonicity is enforced; otherwise weak
 #'   \item width: radius of point count or half-width of strip \item
@@ -127,7 +127,7 @@ detfct.fit <- function(ddfobj, optim.options, bounds, misc.options){
         metaiter <- metaiter + 1
 
         # report failure
-        if(all(class(lt)=="try-error")){
+        if(inherits(lt, "try-error")){
           if(showit>=2){
             cat("DEBUG: iteration", iter, ", fitting", fitting, "failed.\n")
           }

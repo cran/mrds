@@ -14,7 +14,7 @@ DeltaMethod(par, fct, vcov, delta, ...)
 \item{vcov}{variance-covariance matrix of the parameters}
 
 \item{delta}{proportional change in parameters used to numerically estimate
-first derivative with central-difference formula}
+first derivative with central-difference formula (ignored)}
 
 \item{\dots}{any additional arguments needed by \code{fct}}
 }
@@ -32,8 +32,7 @@ set of estimated parameters \code{par}.
 \details{
 The delta method (aka propagation of errors is based on Taylor series
 approximation - see Seber's book on Estimation of Animal Abundance). It uses
-the first derivative of \code{fct} with respect to \code{par} which is
-computed in this function numerically using the central-difference formula.
+the first derivative of \code{fct} with respect to \code{par}.
 It also uses the variance-covariance matrix of the estimated parameters
 which is derived in estimating the parameters and is an input argument.
 
@@ -49,6 +48,6 @@ This is a generic function that can be used in any setting beyond the
 and the user does not need to call it explicitly.
 }
 \author{
-Jeff Laake
+Jeff Laake and David L Miller
 }
 \keyword{utility}

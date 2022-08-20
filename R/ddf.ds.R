@@ -105,7 +105,8 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
                                    standardize=TRUE, mono.points=20,
                                    mono.tol=1e-8, mono.delta=1e-7, debug=FALSE,
                                    nofit=FALSE, optimx.method="nlminb",
-                                   optimx.maxit=300, silent=FALSE)
+                                   optimx.maxit=300, silent=FALSE,
+                                   mono.random.start=FALSE)
 
   #  Save current user options and then set design contrasts to treatment style
   save.options <- options()
@@ -149,7 +150,7 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
   }
 
   # check we don't have more parameters than data
-  npars <- switch(model[[2]]$key,
+  npars <- switch(eval(model[[2]]$key),
                   "unif"  = 0,
                   "hn"    = 1,
                   2) + length(model[[2]]$adj.order)
@@ -187,7 +188,8 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
                      mono.points=control$mono.points, mono.tol=control$mono.tol,
                      mono.delta=control$mono.delta, debug=control$debug,
                      nofit=control$nofit, left=meta.data$left,
-                     silent=control$silent
+                     silent=control$silent,
+                     mono.random.start=control$mono.random.start
                     )
 
   # debug - print the initial values
@@ -234,7 +236,7 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
     result$hessian <- try(flt.var(result$ds$aux$ddfobj, misc.options))
     # Uses formula in Buckland et al or it doesn't match DISTANCE output
     # unless the result is singular
-    if("try-error" %in% class(result$hessian)){
+    if(inherits(result$hessian, "try-error")){
       # the hessian returned from solnp() is not what we want, warn about
       # that and don't return it
       if(misc.options$mono){
@@ -244,7 +246,7 @@ ddf.ds <-function(model, data, meta.data=list(), control=list(), call,
         result$hessian <- lt$hessian
       }
     }else if(length(lt$par)>1){
-      if("try-error" %in% class(try(solve(result$hessian), silent=TRUE))){
+      if(inherits(try(solve(result$hessian), silent=TRUE), "try-error")){
         warning("First partial hessian is singular; using second-partial hessian\n")
         result$hessian <- lt$hessian
       }
