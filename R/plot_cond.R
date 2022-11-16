@@ -8,7 +8,7 @@
 #' @param obs observer code
 #' @param xmat processed data
 #' @param gxvalues detection function values for each observation
-#' @param model   fitted model from \code{ddf}
+#' @param model fitted model from \code{ddf}
 #' @param nc number of equal-width bins for histogram
 #' @param breaks user define breakpoints
 #' @param finebr fine break values over which line is averaged
@@ -32,14 +32,22 @@
 #' @return NULL
 #' @author Jeff Laake, Jon Bishop, David Borchers
 #' @keywords plot
-plot_cond <- function(obs,xmat,gxvalues,model,nc,breaks,finebr,showpoints,
-                      showlines,maintitle,ylim,angle=-45,density=20,col="black",
-                      jitter=NULL,xlab="Distance",ylab="Detection probability",
-                      subtitle=TRUE,...){
+plot_cond <- function(obs, xmat, gxvalues, model, nc, breaks, finebr,
+                      showpoints, showlines, maintitle, ylim, angle=-45,
+                      density=20, col="black", jitter=NULL, xlab="Distance",
+                      ylab="Detection probability", subtitle=TRUE, ...){
 
   # build and plot the histogram
   selection <- xmat$detected[xmat$observer!=obs]==1
   selmat <- (xmat[xmat$observer==obs,])[selection,]
+
+  # only use distances within breaks
+  inside_breaks <- selmat$distance >= min(breaks) &
+                   selmat$distance <= max(breaks)
+  selmat <- selmat[inside_breaks, ]
+  gxvalues <- gxvalues[inside_breaks]
+
+
   shist <- hist(xmat$distance[xmat$observer!= obs & xmat$detected==1],
                 breaks=breaks, plot = FALSE)
   mhist <- hist(xmat$distance[xmat$timesdetected== 2 & xmat$observer==obs],
@@ -55,23 +63,23 @@ plot_cond <- function(obs,xmat,gxvalues,model,nc,breaks,finebr,showpoints,
   mhist$equidist <- FALSE
   mhist$intensities <- mhist$density
   histline(mhist$density, breaks=breaks, lineonly=FALSE, xlab=xlab, ylab=ylab,
-           ylim=ylim, angle=angle, density=density, col=col,
-           det.plot=TRUE, ...)
+           ylim=ylim, angle=angle, density=density, col=col, det.plot=TRUE,
+           ...)
 
   # plot the detection function
   if(showlines){
-    line <- average.line.cond(finebr,obs,model)
+    line <- average.line.cond(finebr, obs, model)
     linevalues <- line$values
     xgrid <- line$xgrid
-    lines(xgrid,linevalues,...)
+    lines(xgrid, linevalues, ...)
   }
 
   # plot points
   if(showpoints){
     ifelse(is.null(jitter),
-           jitter.p<-1,
-           jitter.p<-rnorm(length(gxvalues),1,jitter))
-    points(selmat$distance,gxvalues*jitter.p,...)
+           jitter.p <- 1,
+           jitter.p <- rnorm(length(gxvalues),1,jitter))
+    points(selmat$distance, gxvalues*jitter.p, ...)
   }
 
   # add the usual titles as subtitles if that's what the user asked for
