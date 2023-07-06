@@ -11,7 +11,7 @@
 #'
 #' @author David L. Miller, based on code by Simon N. Wood
 #' @importFrom grDevices dev.interactive
-plot.layout <- function(which,pages){
+plot_layout <- function(which,pages){
 
   # how many plots are there
   n.plots <- length(which)
