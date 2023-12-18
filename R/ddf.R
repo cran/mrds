@@ -156,10 +156,16 @@
 #'   \item{\code{refit}}{if TRUE the algorithm will attempt multiple
 #'   optimizations at different starting values if it doesn't converge}
 #'   \item{\code{nrefits}}{number of refitting attempts}
-#'   \item{\code{initial}}{a named list of starting values for the parameters
-#'   (e.g. \code{$scale}, \code{$shape}, \code{$adjustment})}
-#'   \item{\code{lowerbounds}}{a vector of lowerbounds for the parameters}
-#'   \item{\code{upperbounds}}{a vector of upperbounds for the parameters}
+#'   \item{\code{initial}}{a named list of starting values for the dsmodel
+#'   parameters (e.g. \code{$scale}, \code{$shape}, \code{$adjustment})}
+#'   \item{\code{lowerbounds}}{a vector of lowerbounds for the dsmodel 
+#'   parameters in the order the ds parameters will appear in the par 
+#'   element of the ddf object, i.e. \code{fit.ddf$par} where \code{fit.ddf} 
+#'   is a fitted ddf model.}
+#'   \item{\code{upperbounds}}{a vector of upperbounds for the dsmodel 
+#'   parameters in the order the ds parameters will appear in the par 
+#'   element of the ddf object, i.e. \code{fit.ddf$par} where \code{fit.ddf} 
+#'   is a fitted ddf model.}
 #'   \item{\code{limit}}{if TRUE restrict analysis to observations with
 #'   \code{detected}=1}
 #'   \item{\code{debug}}{ if TRUE, if fitting fails, return an object with
@@ -181,10 +187,13 @@
 #'   \code{solnp} when fitting a monotonic model. Default 200.}
 #'   \item{\code{silent}}{silences warnings within ds fitting method (helpful
 #'   for running many times without generating many warning/error messages).}
-#'   \item{\code{optimizer}}{By default this is set to 'both'. In this case 
-#'   the R optimizer will be used and if present the MCDS optimizer will also 
-#'   be used. The result with the best likelihood value will be selected. To 
-#'   run only a specified optimizer set this value to either 'R' or 'MCDS'. 
+#'   \item{\code{optimizer}}{By default this is set to 'both' for single 
+#'   observer analyses and 'R' for double observer analyses. For single 
+#'   observer analyses where optimizer = 'both', the R optimizer will be used 
+#'   and if present the MCDS optimizer will also be used. The result with the 
+#'   best likelihood value will be selected. To run only a specified optimizer 
+#'   set this value to either 'R' or 'MCDS'. The MCDS optimizer cannot currently
+#'   be used for detection function fitting with double observer analyses.  
 #'   See \code{\link{mcds_dot_exe}} for more information.}
 #'   \item{\code{winebin}}{Location of the \code{wine} binary used to run
 #'   \code{MCDS.exe}. See \link{mcds_dot_exe} for more information.}
@@ -194,7 +203,7 @@
 #' \url{http://examples.distancesampling.org/}.
 #'
 #' Hints and tips on fitting (particularly optimisation issues) are on the
-#' \code{\link{mrds-opt}} manual page.
+#' \code{\link{mrds_opt}} manual page.
 #'
 #' @param dsmodel distance sampling model specification
 #' @param mrmodel mark-recapture model specification
@@ -209,7 +218,7 @@
 #' @seealso \code{\link{ddf.ds}}, \code{\link{ddf.io}},
 #' \code{\link{ddf.io.fi}}, \code{\link{ddf.trial}},
 #' \code{\link{ddf.trial.fi}}, \code{\link{ddf.rem}}, \code{\link{ddf.rem.fi}},
-#' \code{\link{mrds-opt}}
+#' \code{\link{mrds_opt}}
 #' @references Laake, J.L. and D.L. Borchers. 2004. Methods for incomplete
 #'   detection at distance zero. In: Advanced Distance Sampling, eds. S.T.
 #'   Buckland, D.R.Anderson, K.P. Burnham, J.L. Laake, D.L. Borchers, and L.
@@ -317,6 +326,16 @@ ddf <- function(dsmodel=call(), mrmodel=call(),data, method="ds",
   if(method != "ds"){
     if(missing(mrmodel)){
       stop("For method=",method,", mrmodel must be specified")
+    }
+  }
+  if(method %in% c("io","trial","rem")){
+    # Do not use the MCDS.exe optimiser
+    if(is.null(control$optimizer)){
+      # If the user has not specified quietly change to use only R optimizer
+      control$optimizer <- "R"
+    }else if(control$optimizer == "MCDS"){
+      warning("The MCDS optimizer cannot currently be used with double observer analyses, the R opitimizer will be used instead.", call. = FALSE, immediate. = TRUE)
+      control$optimizer <- "R"
     }
   }
 

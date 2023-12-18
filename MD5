@@ -1,6 +1,6 @@
-44f66b51ed8ec373455ef249bed6eaa4 *DESCRIPTION
+15a5793c146d23bac36c56685a4540d4 *DESCRIPTION
 b912093a59ef1dea88604c27bfc65b8b *NAMESPACE
-b30ec506553fec62d073fa0ea3f63b1c *NEWS
+e7b26808a516db19b381f713604403a5 *NEWS
 b2324793ee412c71b33d7274eb7da4d0 *R/AIC.R
 44f64504a0b79ff0b842332110f75459 *R/DeltaMethod.R
 73ded4b8f4e09541d5c10535c42b43d7 *R/NCovered.R
@@ -39,7 +39,7 @@ f9cf1679567f79e2e16e8e3e5186e636 *R/create.bins.R
 88d964f178e183274e11d62a22789d3e *R/create.ddfobj.R
 419e131ebada9bab11650c4866fc60cf *R/create.model.frame.R
 23fdfb83247b895c66778e2d7113212b *R/create.varstructure.R
-0f6e8be76e55cde5063f37b291d3730c *R/ddf.R
+7bd412e3a0b0b56de46b6a35c54d1b09 *R/ddf.R
 a58a28aacd2fe089629f722c3ebb2313 *R/ddf.ds.R
 dc534b62856b902e48f1c6f2d65e4764 *R/ddf.gof.R
 aa0c8094bffacc6ccfa312b971167fed *R/ddf.io.R
@@ -53,9 +53,9 @@ b8f9e4d5cf1ba4d0d48b66415d7a40d0 *R/det.tables.R
 bd5ed51689e2881f9990948d737175e7 *R/detfct.fit.R
 fe5328b240805715030036c1b9a305bf *R/detfct.fit.mono.R
 3da405f71c4ddf07177e686745b92b94 *R/detfct.fit.opt.R
-6d744b0b1071235c9fe7bf0e3b9bf068 *R/dht.R
+d7979b4f8ae94643c604d374367576d0 *R/dht.R
 6890478eb7bfbe82e8d8aa9a3f1541d9 *R/dht.deriv.R
-1b71c5d595eadc25fcfb3fa4ae693c5e *R/dht.se.R
+359e990de74591dde4635bdc0fbaed81 *R/dht.se.R
 bb22bc60ba70ca4b23c5b2807ffc0106 *R/ds.function.r
 994ea7c3015c570e554d874eb9de0b31 *R/fixform.R
 b7984b2df6f7d5f745a207829a0c3fee *R/flnl.R
@@ -97,7 +97,7 @@ a2b6153460f2a83350b592a56f427770 *R/logLik.R
 f84fb0ca6ceb75dc1ffe705b658277ce *R/mcds.R
 44bbb3e1ad8349e9d7b50c7ed3f91c39 *R/mcds_tools.R
 699adc47968e821593162a68f0aa3a8e *R/model.description.R
-8b85038aa8f1574f46a1c198c155e56b *R/mrds-package.R
+9b971037684dbb02426edaaa2a793db0 *R/mrds-package.R
 440857c1adfcd2b50889ae76f164d643 *R/nlminb_wrapper.R
 9c63406456552888bba457b2c20acb6e *R/optimx.setup.R
 330cc43414b5571d8e60016ba68bfd22 *R/p.det.R
@@ -159,11 +159,10 @@ b93ecba851287159c0ba1439db734923 *R/summary.rem.R
 89596daa396e19218549a724cf1f20eb *R/summary.trial.fi.R
 e3a5bba996f9113548f3ee7326c1c65e *R/survey.region.dht.R
 824a7ac654613965c6cdb0357da3cb1a *R/test.breaks.R
-135dcb3fa4c01b61b2582927cd721f00 *R/varn.R
-017c4b9b8fe00cc749507a90edf2f302 *R/zzz.R
+2df0e34b94057d058e591ffc7f292d0c *R/varn.R
+68ba2727ba911ee934b4b55cfad5dd1e *R/zzz.R
 5f94db0858b7d5fc74e67896058d32ac *README.md
-2836b2c5db38c9819380bd093383d89d *build/partial.rdb
-ff9b4ba5bf3cc1c85a6bf125de2bbcd5 *build/vignette.rds
+b943a1546a1e17be4eea235ec7b4616b *build/partial.rdb
 b7e7bd922ee92603ae8a2e0ba3602850 *data/book.tee.data.rda
 ad406a795c10aa5a7714208a5dcefeee *data/lfbcvi.rda
 b2a6d18b4474e6098eea1e5999c9118a *data/lfgcwa.rda
@@ -175,9 +174,6 @@ a9b7a582c8163a87dc8b4d207249d408 *data/ptdata.removal.rda
 87398aea38edd7f82fdbb09fa1a186f8 *data/stake77.rda
 2bbb21fc1d3a153d4601f5676c9f106b *data/stake78.rda
 12e1a6062ae93b2bf981d560970d6c55 *inst/ONEWS
-e8c98e39c7a9fcb4b53cb90eb37e61cc *inst/doc/mrds.R
-77a93b9acdb9157005f90081eb9f6a28 *inst/doc/mrds.Rmd
-e92efe9b415895b9e1128cdf6ebebb20 *inst/doc/mrds.html
 16b85ace2b31d22b137525dc5973862d *man/AIC.ddf.Rd
 7393e6990de5f49f18c7649a5e0b752e *man/DeltaMethod.Rd
 75be843ab17f189602fac6e029cbd046 *man/NCovered.Rd
@@ -188,7 +184,7 @@ e92efe9b415895b9e1128cdf6ebebb20 *inst/doc/mrds.html
 5c7adcdd4b1f36871c031e15a6d5567a *man/assign.par.Rd
 b2a9ab6fefbb43ea3ecbd99c74fc663d *man/average.line.Rd
 3dd8753555b583c6ab556996258f9b69 *man/average.line.cond.Rd
-4d90d27232ad71584a111031ea5a52de *man/book.tee.data.Rd
+025a65a58af027b987b90281c83fdca7 *man/book.tee.data.Rd
 ea72f9659f3f4d562892b7e04e6bc9a4 *man/calc.se.Np.Rd
 e09dcaef1e720e3b120baf1636ec92ed *man/cdf.ds.Rd
 2317770d04230c42081ec9e08fd89b85 *man/cds.Rd
@@ -202,7 +198,7 @@ aadffccc3e98fc265029d01edf6723ef *man/coef.ds.Rd
 5ae43836d65d0c4a6d417ef7cd210a7b *man/create.ddfobj.Rd
 11d892cee4741afccc07238106d06add *man/create.model.frame.Rd
 b77cc688ce51aad0519ff9156f4c20fa *man/create.varstructure.Rd
-6f9817b5031d6ed5450c4ff12001d094 *man/ddf.Rd
+db77f9b16ad1e649622a9482508d4b43 *man/ddf.Rd
 76c776bd02a3212de59c678b70692b93 *man/ddf.ds.Rd
 63547b898c38e15daec12bd5dfc10648 *man/ddf.gof.Rd
 66887bd69611900a885c85f6319489c7 *man/ddf.io.Rd
@@ -214,9 +210,9 @@ a16b18a1715d7af8f7d644a7c212c571 *man/ddf.rem.Rd
 d3579b4c07712e4858b85d8a28140f41 *man/det.tables.Rd
 b3d71119962ce7dd1c660a894d61305c *man/detfct.fit.Rd
 c1353d1edea5bbd8a1c076c0992ad524 *man/detfct.fit.opt.Rd
-a67ec7f58121fb3f3cbd98778404d9e3 *man/dht.Rd
+dd3d8cd661b8e4116c659ae5ed87535b *man/dht.Rd
 91a4a5ddb472e3b2431764a2b846b243 *man/dht.deriv.Rd
-409364f3477a08f77b35933c3d1556d7 *man/dht.se.Rd
+e507403a121a4314d67e20845c291a4c *man/dht.se.Rd
 93fac247fde8cf80963adaded20249e4 *man/distpdf.Rd
 c9470fd74de2e9ba2465ed32fcb5e0c3 *man/ds.function.Rd
 26939f347928eaa979869f582eb646a2 *man/flnl.Rd
@@ -245,9 +241,9 @@ a5802aa8c130ee15483d6278b5784fd6 *man/logisticdetfct.Rd
 fefe8219a1d6bb571752c7b176908fdf *man/logisticdupbyx_fast.Rd
 3df13c8a93fb78eb786e3f09124328fa *man/logit.Rd
 90a274dbc380e41dc952a100f20aa215 *man/mcds.Rd
-295e9278630c1bbb925d56ce29ceac48 *man/mcds_dot_exe.Rd
-567e1ec25f61b5e758209c9d3f1f632b *man/mrds-opt.Rd
+9b50fb437809870c9dd737408306c225 *man/mcds_dot_exe.Rd
 65add9201f717f3882683a9b5200e993 *man/mrds-package.Rd
+83d17f6dad6f3a78b03bfb2d22090d3d *man/mrds_opt.Rd
 f93229c928d00aedf88a1ef26cfdb804 *man/nlminb_wrapper.Rd
 93d81ac873cd1f9e82610b8138316564 *man/p.det.Rd
 0ef34183602a35d56c9d2ab0ae2b74f2 *man/p.dist.table.Rd
@@ -262,7 +258,7 @@ b81900511a0be23c7c9655ab26fd6975 *man/plot.rem.Rd
 b24df837746812648430293ff573b863 *man/plot.trial.Rd
 bffddfd6e276743a075788855b68d822 *man/plot.trial.fi.Rd
 9704a2352ff6ae49425d35845638a48a *man/plot_cond.Rd
-9af2fa15a9045f2ff6d69c7528ea02bf *man/plot_layout.Rd
+19dae86cd1bbcc67f0e1ec80f4649718 *man/plot_layout.Rd
 87b568a7661cbe37d9abe5696232dabd *man/plot_uncond.Rd
 263de8c0d228268fd01fee26b53287ae *man/predict.ds.Rd
 94f397cb014f0e3334e7c5593968f62a *man/print.ddf.Rd
@@ -305,6 +301,4 @@ b32b204d81b4e3bf86b75ba3669db002 *man/summary.rem.fi.Rd
 653177c814b5ec47181aac20061d8bb1 *man/summary.trial.fi.Rd
 35f1ae21d7b8687617c7dd93dfe35a18 *man/survey.region.dht.Rd
 b1bc4f3755bd672834d6ba00c1f942a6 *man/test.breaks.Rd
-464b6df246fc5fd1f72324999580212f *man/varn.Rd
-3a1bb0a78065df4eef8fc2d33c663c57 *vignettes/mrds-var.bib
-77a93b9acdb9157005f90081eb9f6a28 *vignettes/mrds.Rmd
+4480655ae06e256dd0c9c6e5315a1544 *man/varn.Rd
